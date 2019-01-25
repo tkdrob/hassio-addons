@@ -17,8 +17,6 @@
   "map": ["share:rw"],
   "webui": "http://[HOST]:[PORT:81]/spotweb",
   "environment": {
-    "PUID": "0",
-    "PGID": "0",
     "DB_HOST": "172.30.32.1",
     "DB_PORT": "3306",
     "DB_NAME": "spotweb",
