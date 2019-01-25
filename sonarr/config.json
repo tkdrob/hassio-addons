@@ -24,6 +24,10 @@
   "options": {
     "log_level": "info"
   },
+  "environment": {
+    "PUID": "0",
+    "PGID": "0"
+  },
   "schema": {},
   "image": "linuxserver/sonarr"
 }
