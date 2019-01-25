@@ -1,5 +1,5 @@
 {
   "build_from": {
-    "amd64": "steefdebruijn/docker-roonserver"
+    "amd64": "steefdebruijn/docker-roonserver:latest"
   }
 }
