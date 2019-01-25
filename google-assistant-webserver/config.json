@@ -1,11 +1,11 @@
 {
   "name": "Google Assistant Webserver",
   "version": "1.0.0",
-  "description": "Webservice for the Google Assistant SDK",
+  "description": "Webservice for the Google Assistant SDK - mofified version of the original by BubsYourUncle with Dutch broadcast command",
   "slug": "google_assistant_webserver",
   "startup": "application",
   "boot": "auto",
-  "arch": ["armhf", "amd64"],
+  "arch": ["amd64"],
   "map": ["share"],
   "devices": ["/dev/snd:/dev/snd:rwm"],
   "ports": {
