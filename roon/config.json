@@ -1,8 +1,8 @@
 {
   "name": "Roon",
-  "version": "1",
+  "version": "1.0.0",
   "slug": "roon_server",
-  "description": "Roon Server",
+  "description": "Roon Server (www.roonlabs.com) for hass.io",
   "arch": ["amd64"],
   "startup": "services",
   "boot": "auto",
@@ -10,8 +10,5 @@
   "options": {},
   "schema": {},
   "map": ["share:rw", "backup:rw"],
-  "environment": 
-    {
-        "TZ":"Europe/Amsterdam"
-    }
+   "image":"steefdebruijn/docker-roonserver:latest"
 }

@@ -1,8 +1,8 @@
 {
   "name": "Sonarr",
-  "version": "175",
+  "version": "1.0.0",
   "slug": "sonarr_docker",
-  "description": "Sonarr add-on based on the linuxserver/sonarr docker image",
+  "description": "Sonarr add-on",
   "url": "https://github.com/marcelveldt/hassio-addons-repo/sonarr",
   "startup": "services",
   "arch": [
@@ -21,12 +21,10 @@
   ],
   "webui": "http://[HOST]:[PORT:8989]",
   "boot": "auto",
-  "options": {
-    "log_level": "info"
-  },
   "environment": {
     "PUID": "0",
     "PGID": "0"
   },
+  "options": {},
   "schema": {}
 }

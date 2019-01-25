@@ -1,2 +1,3 @@
 #!/bin/bash
-mono --debug NzbDrone.exe -nobrowser -data=/data
+
+mono --debug /app/NzbDrone.exe /nobrowser /data=/data
