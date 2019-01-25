@@ -15,9 +15,24 @@
     "80/tcp": 81
   },
   "map": ["share:rw"],
-  "webui": "http://[HOST]:[PORT:81]",
+  "webui": "http://[HOST]:[PORT:81]/spotweb",
+  "options": {
+    "DB_HOST": "hass.io",
+    "DB_PORT": "3306",
+    "DB_NAME": "spotweb",
+    "DB_USER": "spotweb",
+    "DB_PASS": "spotweb"
+  },
+  "environment": {
+    "PUID": "0",
+    "PGID": "0",
+    "DB_HOST": "[PROTO:DB_HOST]",
+    "DB_PORT": "[PROTO:DB_PORT]",
+    "DB_NAME": "[PROTO:DB_NAME]",
+    "DB_USER": "[PROTO:DB_USER]",
+    "DB_PASS": "[PROTO:DB_PASS]"
+  },
   "boot": "auto",
-  "options": {},
   "schema": {},
   "image":"erikdevries/spotweb"
 }
