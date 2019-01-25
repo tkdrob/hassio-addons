@@ -1,0 +1,22 @@
+{
+  "name": "Google Assistant Webserver",
+  "version": "1.0.0",
+  "description": "Webservice for the Google Assistant SDK",
+  "slug": "google_assistant_webserver",
+  "startup": "application",
+  "boot": "auto",
+  "arch": ["armhf", "amd64"],
+  "map": ["share"],
+  "devices": ["/dev/snd:/dev/snd:rwm"],
+  "ports": {
+    "9324/tcp": 9324,
+    "5000/tcp": 5000
+  },
+  "webui": "http://[HOST]:[PORT:9324]",
+  "options": {
+    "client_secrets": "google_assistant.json"
+  },
+  "schema": {
+    "client_secrets": "str"
+  }
+}
