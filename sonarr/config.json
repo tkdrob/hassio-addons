@@ -15,5 +15,6 @@
   "options": {
     "log_level": "info"
   },
+  "schema": {},
   "image": "linuxserver/sonarr"
 }
