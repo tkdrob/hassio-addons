@@ -15,7 +15,7 @@
     "80/tcp": 81
   },
   "map": ["share:rw"],
-  "webui": "http://[HOST]:[PORT:81]/spotweb",
+  "webui": "http://[HOST]:[PORT:81]",
   "environment": {
     "DB_HOST": "172.30.32.1",
     "DB_PORT": "3306",
