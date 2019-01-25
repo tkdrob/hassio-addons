@@ -1,12 +1,6 @@
 FROM linuxserver/sonarr
 
 # MOFIFY DATA PATH
-# RUN sed -i "s|config|data|g" /var/run/s6/services/sonarr/run
+RUN sed -i "s|config|data|g" /etc/services.d/sonarr/run
 
 VOLUME [ "/data" ]
-
-
-COPY run.sh /
-RUN chmod a+x /run.sh
-
-ENTRYPOINT [ "/run.sh" ]
