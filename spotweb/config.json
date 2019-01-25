@@ -27,5 +27,6 @@
   },
   "boot": "auto",
   "schema": {},
+  "options": {},
   "image":"erikdevries/spotweb"
 }
