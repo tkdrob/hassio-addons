@@ -1,8 +1,8 @@
 {
   "name": "Roon",
-  "version": "1.0.0",
+  "version": "latest",
   "slug": "roon_server",
-  "description": "Roon Server (www.roonlabs.com) for hass.io",
+  "description": "Roon Server (www.roonlabs.com) for hass.io based on steefdebruijn/docker-roonserver",
   "arch": ["amd64"],
   "startup": "services",
   "boot": "auto",
