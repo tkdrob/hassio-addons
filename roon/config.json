@@ -10,5 +10,5 @@
   "options": {},
   "schema": {},
   "map": ["share:rw", "backup:rw"],
-   "image":"steefdebruijn/docker-roonserver:latest"
+  "image":"steefdebruijn/docker-roonserver"
 }
