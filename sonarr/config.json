@@ -28,6 +28,5 @@
     "PUID": "0",
     "PGID": "0"
   },
-  "schema": {},
-  "image": "linuxserver/sonarr"
+  "schema": {}
 }
