@@ -1,6 +1,6 @@
 {
   "name": "Sonarr",
-  "version": "1.0.0",
+  "version": "175",
   "slug": "sonarr_docker",
   "description": "Sonarr add-on based on the linuxserver/sonarr docker image",
   "url": "https://github.com/marcelveldt/hassio-addons-repo/sonarr",
