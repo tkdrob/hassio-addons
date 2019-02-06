@@ -80,7 +80,7 @@ class PlaylistSyncer():
         self.load_cache()
 
         run_count = self.cache["cache_run_count"]
-        if run_count >= 7:
+        if run_count >= 35: # every week if scheduled 5 times a day
             self.force_full_sync = True
             self.cache["cache_run_count"] = 0
         else:
