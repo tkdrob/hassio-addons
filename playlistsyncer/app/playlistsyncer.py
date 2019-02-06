@@ -44,10 +44,12 @@ CUSTOM_REPLACE={
 
 
 ############################################################################################
-LOGFORMAT = '%(asctime)-15s %(levelname)-5s  %(module)s -- %(message)s'
-logging.basicConfig(format=LOGFORMAT)
+LOGFORMAT = logging.Formatter('%(asctime)-15s %(levelname)-5s  %(module)s -- %(message)s')
 LOGGER = logging.getLogger()
-LOGGER.setLevel(logging.WARNING)
+consolehandler = logging.StreamHandler()
+consolehandler.setFormatter(LOGFORMAT)
+consolehandler.setLevel(logging.INFO)
+LOGGER.addHandler(consolehandler)
 
 if os.path.isdir("/data"):
     CACHE_FILE = "/data/cache.json"
@@ -128,7 +130,7 @@ class PlaylistSyncer():
         if log_file:
             logformat = logging.Formatter(LOGFORMAT)
             filehandler = logging.FileHandler(log_file, 'w')
-            filehandler.setFormatter(logformat)
+            filehandler.setFormatter(LOGFORMAT)
             loglevel = eval("logging." + config["log_level"])
             filehandler.setLevel(loglevel)
             LOGGER.addHandler(filehandler)
