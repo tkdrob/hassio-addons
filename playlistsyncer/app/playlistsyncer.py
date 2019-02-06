@@ -46,6 +46,7 @@ CUSTOM_REPLACE={
 ############################################################################################
 LOGFORMAT = logging.Formatter('%(asctime)-15s %(levelname)-5s  %(module)s -- %(message)s')
 LOGGER = logging.getLogger()
+LOGGER.setLevel(logging.DEBUG)
 consolehandler = logging.StreamHandler()
 consolehandler.setFormatter(LOGFORMAT)
 consolehandler.setLevel(logging.INFO)
