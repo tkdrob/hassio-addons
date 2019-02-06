@@ -1,0 +1,60 @@
+{
+  "name": "Playlistsyncer",
+  "version": "0.0.16",
+  "description": "Sync playlists",
+  "slug": "playlist_syncer",
+  "startup": "application",
+  "boot": "auto",
+  "arch": ["amd64"],
+  "map": ["share:rw"],
+  "options": {
+    "log_level": "INFO",
+    "log_file": "/share/playlistsyncer.log",
+    "force_full_sync": false,
+    "matcher_strictness": 0.9,
+    "spotify_username": "",
+    "spotify_password": "",
+    "tidal_username": "",
+    "tidal_password": "",
+    "qobuz_username": "",
+    "qobuz_password": "",
+    "roon_server": "",
+    "roon_syncpartner": "TIDAL",
+    "roon_syncpartner_prefix": "zzz_sync_",
+    "playlists": [
+        {
+        "source_provider": "SPOTIFY",
+        "source_playlist": "MyPlaylist",
+        "destination_provider": "ROON",
+        "destination_playlist": "MyPlaylist",
+        "two_way": true,
+        "add_library": false
+      }
+      ]
+  },
+  "schema": {
+    "log_level": "match(^(DEBUG|INFO|WARNING|ERROR)$)",
+    "log_file": "str",
+    "force_full_sync": "bool",
+    "matcher_strictness": "float",
+    "spotify_username": "str",
+    "spotify_password": "str",
+    "tidal_username": "str",
+    "tidal_password": "str",
+    "qobuz_username": "str",
+    "qobuz_password": "str",
+    "roon_server": "str",
+    "roon_syncpartner": "match(^(TIDAL|QOBUZ)$)",
+    "roon_syncpartner_prefix": "str",
+    "playlists": [
+      {
+        "source_provider": "match(^(TIDAL|QOBUZ|SPOTIFY|ROON)$)",
+        "source_playlist": "str",
+        "destination_provider": "match(^(TIDAL|QOBUZ|SPOTIFY|ROON)$)",
+        "destination_playlist": "str",
+        "two_way": "bool",
+        "add_library": "bool"
+      }
+    ]
+  }
+}
