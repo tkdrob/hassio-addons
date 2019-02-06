@@ -343,7 +343,7 @@ class PlaylistSyncer():
             for item in roon_tracks:
                 if item["id"] == track_id:
                     return self.remove_track_from_playlist(self.config["roon_syncpartner"], sync_playlist, track_id)
-            LOGGER.warning("%s should be manually removed from the ROON playlist %s" % (track_id, playlist))
+            LOGGER.warning("%s should be manually removed from the ROON playlist %s" % (track_id, playlist_name))
 
     def find_match_in_tracks(self, track_left, tracks_right, prefer_quality=0, version_match=False, album_match=False):
         ''' match given track in list with tracks from other service'''
