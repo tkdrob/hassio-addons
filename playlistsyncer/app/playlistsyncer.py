@@ -339,7 +339,7 @@ class PlaylistSyncer():
         elif provider == "ROON":
             # check if the track is in the special syncpartner list
             sync_playlist = self.config["roon_syncpartner_prefix"] + playlist_name
-            roon_tracks += self.get_playlist_tracks(self.config["roon_syncpartner"], sync_playlist)
+            roon_tracks = self.get_playlist_tracks(self.config["roon_syncpartner"], sync_playlist)
             for item in roon_tracks:
                 if item["id"] == track_id:
                     return self.remove_track_from_playlist(self.config["roon_syncpartner"], sync_playlist, track_id)
