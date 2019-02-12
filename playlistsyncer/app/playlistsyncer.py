@@ -79,8 +79,7 @@ class PlaylistSyncer():
         self.parse_config()
         self.load_cache()
 
-        run_count = self.cache["cache_run_count"]
-        if run_count >= 35: # every week if scheduled 5 times a day
+        if self.cache["cache_run_count"] >= 7: # every week if scheduled once a day
             self.force_full_sync = True
             self.cache["cache_run_count"] = 0
         else:
@@ -292,8 +291,8 @@ class PlaylistSyncer():
         for track in src_tracks:
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
             cache_match = self.find_match_in_tracks(track, tracks_cache)
-            if cache_match and not self.force_full_sync and cache_match.get("syncpartner_id"):
-                LOGGER.debug("%s present in cache and will be ignored" % track_str)
+            if cache_match and not self.force_full_sync:
+                LOGGER.debug("%s present in cache and will be ignored this run" % track_str)
             else:
                 # this track is not in the cache from last run so it's added (or this is a full sync)
                 dest_match = self.find_match_in_tracks(track, dest_tracks, version_match=True)
@@ -448,12 +447,12 @@ class PlaylistSyncer():
         elif provider == "QOBUZ":
             minimum_qualities = [26, 7, 0]
 
-        # we prefer a match with the highest quality (only applies to tidal and qobuz)
-        for minimum_quality in minimum_qualities:
-            for album_match in [True, False]:
-                for artist_str in track_details["artists"] + self.split_artists(track_details["artists"]):
-                    for title_str in self.split_title(track_details["title"]):
-                        searchstring = "%s - %s" %(artist_str, title_str)
+        for artist_str in track_details["artists"] + self.split_artists(track_details["artists"]):
+            for title_str in self.split_title(track_details["title"]):
+                searchstring = "%s - %s" %(artist_str, title_str)
+                # we prefer a match with the highest quality (only applies to tidal and qobuz)
+                for minimum_quality in minimum_qualities:
+                    for album_match in [True, False]:
                         if searchstring in self.search_cache:
                             results = self.search_cache[searchstring]
                         else:
