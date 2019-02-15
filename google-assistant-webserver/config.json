@@ -5,7 +5,7 @@
   "slug": "google_assistant_webserver",
   "startup": "application",
   "boot": "auto",
-  "arch": ["amd64"],
+  "arch": ["armhf", "amd64"],
   "devices": ["/dev/snd:/dev/snd:rwm"],
   "ports": {
     "9324/tcp": 9324,
