@@ -1,6 +1,6 @@
 {
     "name": "Auto Backup Hassio",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "slug": "autobackup",
     "description": "Automatically create hass.io snapshots and (optionally) upload to the cloud",
     "arch": [

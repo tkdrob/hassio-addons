@@ -5,9 +5,9 @@ CONFIG_PATH=/data/options.json
 CRON_TASK=$(jq --raw-output ".schedule" $CONFIG_PATH)
 
 # run app immediately if first run detected
-if [ ! -f "/usr/src/app/firstrun" ]; then
+if [ ! -f "/data/firstrun" ]; then
     echo "First run detected, starting snapshot job"
-    touch "/usr/src/app/firstrun"
+    echo -e "firstrun" >> /data/firstrun
     python /usr/src/app/main.py > /proc/1/fd/1 2>/proc/1/fd/2
 fi
 
