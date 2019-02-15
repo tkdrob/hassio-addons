@@ -36,7 +36,7 @@ PLAYING = embedded_assistant_pb2.ScreenOutConfig.PLAYING
 class BroadcastMessage(Resource):
     def get(self):
         message = request.args.get('message', default = 'This is a test!')
-        text_query = 'vertel iedereen '+ message
+        text_query = '%s %s' % (broadcast_cmd, message)
         response_text, response_html = assistant.assist(text_query=text_query)
         logging.debug(response_text)
         return {'status': 'OK'}
@@ -133,8 +133,10 @@ class GoogleTextAssistant(object):
 
 if __name__ == '__main__':
     global assistant
+    global broadcast_cmd
 
     cred_json = Path(sys.argv[1])
+    broadcast_cmd = sys.argv[2]
 
     # open credentials
     with cred_json.open('r') as data:
@@ -146,7 +148,7 @@ if __name__ == '__main__':
     grpc_channel = google.auth.transport.grpc.secure_authorized_channel(
         credentials, http_request, ASSISTANT_API_ENDPOINT)
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     # Create the text assistant
     assistant = GoogleTextAssistant('en-US', 'HA_GA', 'HA_GA_TEXT_SERVER',

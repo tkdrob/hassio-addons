@@ -2,16 +2,9 @@
 set -e
 
 CONFIG_PATH=/data/options.json
-CLIENT_JSON=/data/client.json
+CLIENT_JSON=/data/client_secrets.json
 CRED_JSON=/data/cred.json
-
-CLIENT_SECRETS=$(jq --raw-output '.client_secrets' $CONFIG_PATH)
-
-# check if a new assistant file exists
-if [ -f "/share/$CLIENT_SECRETS" ]; then
-    echo "[Info] Install/Update service client_secrets file"
-    cp -f "/share/$CLIENT_SECRETS" "$CLIENT_JSON"
-fi
+BROADCAST_CMD=$(jq --raw-output '.broadcast_cmd' $CONFIG_PATH)
 
 if [ ! -f "$CRED_JSON" ] && [ -f "$CLIENT_JSON" ]; then
     echo "[Info] Start WebUI for handling oauth2"
@@ -21,4 +14,4 @@ elif [ ! -f "$CRED_JSON" ]; then
     exit 1
 fi
 
-exec python3 /hassio_gassistant.py "$CRED_JSON" < /dev/null
+exec python3 /hassio_gassistant.py "$CRED_JSON" "BROADCAST_CMD" > /proc/1/fd/1 2>/proc/1/fd/2"
