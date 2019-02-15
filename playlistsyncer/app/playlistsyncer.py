@@ -17,7 +17,6 @@ from qobuz import QobuzApi
 import uuid
 import taglib
 
-MUSIC_DIR="/share/music"
 
 CUSTOM_REPLACE={
     "2 Unlimted": "2 Unlimited",
@@ -97,7 +96,7 @@ class PlaylistSyncer():
 
 
     def parse_config(self):
-        ''' grab config from file or environmental variables '''
+        ''' grab config from file '''
         config = {
             "log_level": "info",
             "log_file": "",
@@ -111,6 +110,7 @@ class PlaylistSyncer():
             "qobuz_password": "",
             "roon_syncpartner": "QOBUZ",
             "roon_syncpartner_prefix": "zzz_sync_",
+            "roon_music_dir": "",
             "playlists": [],
             "roon_server": ""
         }
@@ -120,11 +120,7 @@ class PlaylistSyncer():
                 data = f.read()
                 config = json.loads(data)
         else:
-            # grab from environmental variables
-            for key in config.keys():
-                value = os.environ[key]
-                if value:
-                    config[key] = value
+            LOGGER.error("Config file does not exist on disk!")
         config["roon_syncpartner"] = config["roon_syncpartner"].upper()
         log_file = config["log_file"]
         if log_file:
@@ -821,6 +817,10 @@ class PlaylistSyncer():
 
     def find_match_file(self, track_details):
         tmp_file = None
+        if not self.config["roon_music_dir"]:
+            return
+
+        # todo: iterate through files to get match
 
         # try to grab the track from tidal
         tidal_match = self.search_track_tidal(track_details)
@@ -872,7 +872,7 @@ class PlaylistSyncer():
             if not album:
                 album = title
             clean_album = self.get_filename(album)
-            file_dir = "%s/%s/%s" % (MUSIC_DIR, clean_artist, clean_album)
+            file_dir = "%s/%s/%s" % (self.config["roon_music_dir"], clean_artist, clean_album)
             filename = "%s/%s - %s.%s" % (file_dir, clean_artist, clean_title, tmp_file.split(".")[-1])
             if not os.path.exists(file_dir):
                 os.makedirs(file_dir)

@@ -1,6 +1,6 @@
 {
   "name": "Playlistsyncer",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Sync playlists",
   "slug": "playlist_syncer",
   "startup": "application",
@@ -10,6 +10,7 @@
   "options": {
     "log_level": "INFO",
     "log_file": "/share/playlistsyncer.log",
+    "schedule": "0 1 * * *",
     "force_full_sync": false,
     "matcher_strictness": 0.9,
     "spotify_username": "",
@@ -21,6 +22,7 @@
     "roon_server": "",
     "roon_syncpartner": "TIDAL",
     "roon_syncpartner_prefix": "zzz_sync_",
+    "roon_music_dir": "",
     "playlists": [
         {
         "source_provider": "SPOTIFY",
@@ -35,6 +37,7 @@
   "schema": {
     "log_level": "match(^(DEBUG|INFO|WARNING|ERROR)$)",
     "log_file": "str",
+    "schedule": "str",
     "force_full_sync": "bool",
     "matcher_strictness": "float",
     "spotify_username": "str",
@@ -46,6 +49,7 @@
     "roon_server": "str",
     "roon_syncpartner": "match(^(TIDAL|QOBUZ)$)",
     "roon_syncpartner_prefix": "str",
+    "roon_music_dir": "str",
     "playlists": [
       {
         "source_provider": "match(^(TIDAL|QOBUZ|SPOTIFY|ROON)$)",

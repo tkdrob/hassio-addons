@@ -1,3 +1,0 @@
-0 4 * * * python /usr/src/app/playlistsyncer.py > /proc/1/fd/1 2>/proc/1/fd/2
-@reboot python /usr/src/app/playlistsyncer.py > /proc/1/fd/1 2>/proc/1/fd/2
-# remember to end this file with an empty new line
