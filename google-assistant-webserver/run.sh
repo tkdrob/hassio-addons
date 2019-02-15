@@ -14,4 +14,4 @@ elif [ ! -f "$CRED_JSON" ]; then
     exit 1
 fi
 
-exec python3 /hassio_gassistant.py "$CRED_JSON" "BROADCAST_CMD" > /proc/1/fd/1 2>/proc/1/fd/2"
+exec python3 /hassio_gassistant.py "$CRED_JSON" "BROADCAST_CMD" > /proc/1/fd/1 2>/proc/1/fd/2
