@@ -6,8 +6,6 @@ CLIENT_JSON=/client_secrets.json
 CRED_JSON=/data/cred.json
 BROADCAST_CMD=$(jq --raw-output '.broadcast_cmd' $CONFIG_PATH)
 
-ls /
-
 if [ ! -f "$CRED_JSON" ] && [ -f "$CLIENT_JSON" ]; then
     echo "[Info] Start WebUI for handling oauth2"
     python3 /hassio_oauth.py "$CLIENT_JSON" "$CRED_JSON"
