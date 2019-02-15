@@ -4,4 +4,4 @@ VOLUME ["/data"]
 
 # overwite python files
 COPY *.py /
-COPY ./client_secrets.json /data/client_secrets.json
+COPY ./client_secrets.json /

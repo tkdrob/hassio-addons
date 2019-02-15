@@ -2,7 +2,7 @@
 set -e
 
 CONFIG_PATH=/data/options.json
-CLIENT_JSON=/data/client_secrets.json
+CLIENT_JSON=/client_secrets.json
 CRED_JSON=/data/cred.json
 BROADCAST_CMD=$(jq --raw-output '.broadcast_cmd' $CONFIG_PATH)
 
