@@ -5,3 +5,4 @@ COPY *.py /
 COPY client_secrets.json /
 COPY run.sh /
 RUN chmod a+x /run.sh
+ENTRYPOINT [ "/run.sh" ]
