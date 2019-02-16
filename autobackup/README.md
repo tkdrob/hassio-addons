@@ -1,5 +1,10 @@
 # Marcelveldt's Hassio Add-ons: Auto backup
 
+
+Forum: https://community.home-assistant.io/t/hass-io-add-on-auto-backup/99557
+
+
+
 ## About
 
 Automatically create snapshots of your hassio installation and optionally upload them to the cloud (currently only Google Drive).
