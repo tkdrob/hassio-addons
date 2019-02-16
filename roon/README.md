@@ -2,7 +2,11 @@
 
 ## About
 
-Roon Server (www.roonlabs.com) for hass.io based on steefdebruijn/docker-roonserver
+
+Roon Core Server (www.roonlabs.com) - The core manages your music collection from many sources, and builds an interconnected digital library using enhanced information from Roon.
+
+Add-on for hass.io based on docker image steefdebruijn/docker-roonserver
+
 
 ## Installation
 
