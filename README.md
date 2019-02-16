@@ -1,4 +1,4 @@
-# Community Hass.io Add-ons for Home Assistant
+# Marcelveldt's Hass.io Add-ons for Home Assistant
 
 ![Project Stage][project-stage-shield]
 [![Community Forum][forum-shield]][forum]
