@@ -72,7 +72,7 @@ This is an active open-source project. Feel free to use the code and/or contribu
 
 
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg
-[forum]: https://community.home-assistant.io?u=marcelveldt
+[forum]: https://community.home-assistant.io/t/repository-marcelveldts-hassio-add-ons/99540
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2018.svg
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-production%20ready-brightgreen.svg
 [third-party-addons]: https://home-assistant.io/hassio/installing_third_party_addons/
