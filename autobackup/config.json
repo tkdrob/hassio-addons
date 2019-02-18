@@ -27,10 +27,10 @@
         "enabled" : true, 
         "subfolders" : []
       },
-      "auto_purge" : 3,
+      "auto_purge" : 7,
       "google_drive" : {
         "enabled" : true, 
-        "auto_purge" : 12,
+        "auto_purge" : 3,
         "backup_folder": "hassio_backups"
       }
     },
