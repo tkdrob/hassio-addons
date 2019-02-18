@@ -1,6 +1,6 @@
 {
     "name": "Auto Backup Hassio",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "slug": "autobackup",
     "description": "Automatically create hass.io snapshots and (optionally) upload to the cloud",
     "arch": [
@@ -17,6 +17,7 @@
       "log_level": "INFO",
       "log_file": "/backup/autobackup.log",
       "schedule": "0 4 * * *",
+      "run_backup_at_startup": true,
       "backup_addons" : {
         "enabled" : true, 
         "whitelist" : [],
@@ -37,6 +38,7 @@
         "log_level": "match(^(DEBUG|INFO|WARNING|ERROR)$)",
         "log_file": "str",
         "schedule": "str",
+        "run_backup_at_startup": "bool",
         "backup_addons" : {"enabled":"bool", "whitelist":["str"], "blacklist":["str"]},
         "backup_share" : {"enabled":"bool", "subfolders":["str"]},
         "auto_purge" : "int(0,)",
