@@ -211,6 +211,8 @@ class Main():
         if not self.gdrive:
             return
         num_keep = self.config["google_drive"]["auto_purge"]
+        if num_keep < 1:
+            return
         query = {
             'q': "'%s' in parents and trashed=false" % self.gdrive_folder,
             'orderBy': "modifiedDate",
