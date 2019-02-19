@@ -85,6 +85,11 @@ Full path to the logfile. Root folder can be either /backup or /share. The addon
 Schedule when the backup task should run. By default it's set to every night at 04:00.
 You can use CRON syntax for this. http://www.nncron.ru/help/EN/working/cron-format.htm
 
+### Option: `run_backup_at_startup`
+
+Enabling this option will run the snapshot task on startup of the addon (besides the configures schedule).
+Usefull for the first time configuration.
+
 ### Option: `backup_addons`
 
 This setting allows you to include installed addons (and their configuration) into the snapshot.
