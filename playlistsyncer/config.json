@@ -23,7 +23,7 @@
     "roon_syncpartner": "TIDAL",
     "roon_syncpartner_prefix": "zzz_sync_",
     "roon_music_dir": "",
-    "store_unmatched_tracks": True,
+    "store_unmatched_tracks": true,
     "playlists": [
         {
         "source_provider": "SPOTIFY",
