@@ -598,7 +598,7 @@ class PlaylistSyncer():
         else:
             return []
 
-    def get_spotify_playlist(self, playlist_name, allow_create=False):
+    def get_spotify_playlist(self, playlist_name, allow_create=True):
         for sp_playlist in self.get_spotify_playlists():
             if playlist_name.lower() == sp_playlist["name"].lower():
                 return sp_playlist
@@ -614,7 +614,7 @@ class PlaylistSyncer():
                 returned_playlists.append(playlist)
         return returned_playlists
 
-    def get_tidal_playlist(self, playlist_name, allow_create=False):
+    def get_tidal_playlist(self, playlist_name, allow_create=True):
         for playlist in self.tidal_user.playlists():
             if playlist.title == playlist_name:
                 return playlist
