@@ -112,6 +112,7 @@ class PlaylistSyncer():
             "roon_syncpartner_prefix": "zzz_sync_",
             "roon_music_dir": "",
             "playlists": [],
+            "store_unmatched_tracks": True,
             "roon_server": ""
         }
         if os.path.isfile("/data/options.json"):
@@ -283,6 +284,11 @@ class PlaylistSyncer():
         cache_key = "%s_%s_%s_%s" %(source_provider, source_playlist, destination_provider, destination_playlist)
         tracks_cache = self.cache.get(cache_key,[])
         dest_tracks = self.get_playlist_tracks(destination_provider, destination_playlist)
+
+        unmatched_tracks_playlist = source_playlist + "__unmatched"
+        unmatched_tracks_provider = source_provider
+        unmatched_tracks_playlist_tracks = self.get_playlist_tracks(unmatched_tracks_provider, unmatched_tracks_playlist)
+        unmatched_tracks_playlist_trackids = [ item["id"] for item in unmatched_tracks_playlist_tracks ]
         
         for track in src_tracks:
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
@@ -304,6 +310,8 @@ class PlaylistSyncer():
                     track["syncpartner_id"] = dest_match["id"]
                 else:
                     LOGGER.warning("Track %s could not be added to %s/%s" %(track_str, destination_provider, destination_playlist))
+                    if not track["id"] in unmatched_tracks_playlist_trackids:
+                        self.add_track_to_playlist(track, unmatched_tracks_provider, unmatched_tracks_playlist, False, track["id"])
 
         # process track deletions
         LOGGER.info(" ")
@@ -495,19 +503,19 @@ class PlaylistSyncer():
 
     ####### ADD TRACK TO PLAYLIST ####################
 
-    def add_track_to_playlist(self, track_details, provider, playlist_name, add_library=False):
+    def add_track_to_playlist(self, track_details, provider, playlist_name, add_library=False, track_id=None):
         if provider == "TIDAL":
-            return self.add_track_to_tidal_playlist(track_details, playlist_name, add_library)
+            return self.add_track_to_tidal_playlist(track_details, playlist_name, add_library, track_id)
         elif provider == "QOBUZ":
-            return self.add_track_to_qobuz_playlist(track_details, playlist_name, add_library)
+            return self.add_track_to_qobuz_playlist(track_details, playlist_name, add_library, track_id)
         elif provider == "ROON":
-            return self.add_track_to_roon_playlist(track_details, playlist_name, add_library)
+            return self.add_track_to_roon_playlist(track_details, playlist_name, add_library, track_id)
         elif provider == "SPOTIFY":
-            return self.add_track_to_spotify_playlist(track_details, playlist_name, add_library)
+            return self.add_track_to_spotify_playlist(track_details, playlist_name, add_library, track_id)
         else:
             return None
 
-    def add_track_to_tidal_playlist(self, track_details, playlist_name, add_library=False):
+    def add_track_to_tidal_playlist(self, track_details, playlist_name, add_library=False, track_id=None):
         ''' attempt to add a track to a Tidal playlist '''
         tidal_playlist = self.get_tidal_playlist(playlist_name, True)
         tidal_track = self.search_track_tidal(track_details)
@@ -524,7 +532,7 @@ class PlaylistSyncer():
         else:
             return None
 
-    def add_track_to_qobuz_playlist(self, track_details, playlist_name, add_library=False):
+    def add_track_to_qobuz_playlist(self, track_details, playlist_name, add_library=False, track_id=None):
         ''' attempt to add a track to a Qobuz playlist '''
         qobuz_playlist = self.qobuz.get_playlist(playlist_name, True)
         qobuz_track = self.search_track_qobuz(track_details)
@@ -546,10 +554,13 @@ class PlaylistSyncer():
         else:
             return None
 
-    def add_track_to_spotify_playlist(self, track_details, playlist_name, add_library=False):
+    def add_track_to_spotify_playlist(self, track_details, playlist_name, add_library=False, track_id=None):
         '''add track to spotify playlist'''
         playlist = self.get_spotify_playlist(playlist_name)
-        sp_track = self.search_track_spotify(track_details)
+        if track_id:
+            sp_track = track_details
+        else:
+            sp_track = self.search_track_spotify(track_details)
         if sp_track:
             self.sp.user_playlist_add_tracks(self.sp_user["id"], playlist["id"], [sp_track["id"]])
             track_str = "%s - %s" %("/".join(sp_track["artists"]), sp_track["title"])
@@ -558,7 +569,7 @@ class PlaylistSyncer():
         else:
             return None
 
-    def add_track_to_roon_playlist(self, track_details, playlist_name, add_library=False):
+    def add_track_to_roon_playlist(self, track_details, playlist_name, add_library=False, track_id=None):
         '''add track to roon playlist (using syncpartner temp playlist)'''
         playlist = self.config["roon_syncpartner_prefix"] + playlist_name
         result = None

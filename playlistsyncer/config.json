@@ -1,6 +1,6 @@
 {
   "name": "Playlistsyncer",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Sync playlists",
   "slug": "playlist_syncer",
   "startup": "application",
@@ -23,6 +23,7 @@
     "roon_syncpartner": "TIDAL",
     "roon_syncpartner_prefix": "zzz_sync_",
     "roon_music_dir": "",
+    "store_unmatched_tracks": True,
     "playlists": [
         {
         "source_provider": "SPOTIFY",
@@ -50,6 +51,7 @@
     "roon_syncpartner": "match(^(TIDAL|QOBUZ)$)",
     "roon_syncpartner_prefix": "str",
     "roon_music_dir": "str",
+    "store_unmatched_tracks": "bool",
     "playlists": [
       {
         "source_provider": "match(^(TIDAL|QOBUZ|SPOTIFY|ROON)$)",
