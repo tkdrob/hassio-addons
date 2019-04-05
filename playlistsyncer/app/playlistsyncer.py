@@ -287,9 +287,9 @@ class PlaylistSyncer():
 
         # write m3u playlist
         # todo: process deletions
-        if m3u_uris:
-            m3u_filename = os.path.join(self.config['local_music_dir'], '%s_.m3u' % destination_playlist)
-            with open(m3u_filename, 'a') as m3u_file:
+        if create_m3u and m3u_uris:
+            m3u_filename = os.path.join(self.config['local_music_dir'], '%s - %s.m3u' %(destination_playlist, source_provider))
+            with open(m3u_filename, 'a+') as m3u_file:
                 for line in m3u_uris:
                     m3u_file.write(line)
 
