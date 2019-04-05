@@ -114,7 +114,6 @@ class PlaylistSyncer():
                 config = json.loads(data)
         else:
             LOGGER.error("Config file does not exist on disk!")
-        config["roon_syncpartner"] = config["roon_syncpartner"].upper()
         log_file = config["log_file"]
         if log_file:
             logformat = logging.Formatter(LOGFORMAT)
