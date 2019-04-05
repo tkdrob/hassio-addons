@@ -1,6 +1,6 @@
 {
   "name": "Playlistsyncer",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "Sync playlists",
   "slug": "playlist_syncer",
   "startup": "application",
@@ -19,16 +19,12 @@
     "tidal_password": "",
     "qobuz_username": "",
     "qobuz_password": "",
-    "roon_server": "",
-    "roon_syncpartner": "TIDAL",
-    "roon_syncpartner_prefix": "zzz_sync_",
-    "roon_music_dir": "",
-    "store_unmatched_tracks": true,
+    "local_music_dir": "",
     "playlists": [
         {
         "source_provider": "SPOTIFY",
         "source_playlist": "MyPlaylist",
-        "destination_provider": "ROON",
+        "destination_provider": "QOBUZ",
         "destination_playlist": "MyPlaylist",
         "two_way": true,
         "add_library": false
@@ -47,19 +43,16 @@
     "tidal_password": "str",
     "qobuz_username": "str",
     "qobuz_password": "str",
-    "roon_server": "str",
-    "roon_syncpartner": "match(^(TIDAL|QOBUZ)$)",
-    "roon_syncpartner_prefix": "str",
-    "roon_music_dir": "str",
-    "store_unmatched_tracks": "bool",
+    "local_music_dir": "str?",
     "playlists": [
       {
-        "source_provider": "match(^(TIDAL|QOBUZ|SPOTIFY|ROON)$)",
+        "source_provider": "match(^(TIDAL|QOBUZ|SPOTIFY|LOCAL)$)",
         "source_playlist": "str",
-        "destination_provider": "match(^(TIDAL|QOBUZ|SPOTIFY|ROON)$)",
+        "destination_provider": "match(^(TIDAL|QOBUZ|SPOTIFY|LOCAL)$)",
         "destination_playlist": "str",
         "two_way": "bool",
-        "add_library": "bool"
+        "add_library": "bool",
+        "create_m3u": "bool?"
       }
     ]
   }

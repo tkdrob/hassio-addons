@@ -12,7 +12,6 @@ import spotipy.util as sp_util
 import unicodedata
 from difflib import SequenceMatcher as Matcher
 from operator import itemgetter
-from roon import RoonApi
 from qobuz import QobuzApi
 import uuid
 import taglib
@@ -53,10 +52,8 @@ LOGGER.addHandler(consolehandler)
 
 if os.path.isdir("/data"):
     CACHE_FILE = "/data/cache.json"
-    ROON_TOKEN_FILE = "/data/.roontoken"
 else:
     CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),".cache")
-    ROON_TOKEN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),".roontoken")
 
 
 class PlaylistSyncer():
@@ -85,7 +82,6 @@ class PlaylistSyncer():
             self.cache["cache_run_count"] += 1
 
         # login music providers
-        self.login_roon()
         self.login_qobuz()
         self.login_tidal()
         self.login_spotify()
@@ -108,12 +104,8 @@ class PlaylistSyncer():
             "tidal_password": "",
             "qobuz_username": "",
             "qobuz_password": "",
-            "roon_syncpartner": "QOBUZ",
-            "roon_syncpartner_prefix": "zzz_sync_",
-            "roon_music_dir": "",
-            "playlists": [],
-            "store_unmatched_tracks": True,
-            "roon_server": ""
+            "local_music_dir": "",
+            "playlists": []
         }
         if os.path.isfile("/data/options.json"):
             # grab from (hassio) config file
@@ -147,28 +139,6 @@ class PlaylistSyncer():
         '''write cache entries to file'''
         with open(CACHE_FILE, 'w') as outfile:
             json.dump(self.cache, outfile, indent=4)
-
-    def login_roon(self):
-        ''' setup api connection with Roon'''
-        if not self.config["roon_server"]:
-            return False
-        if os.path.isfile(ROON_TOKEN_FILE):
-            token = open(ROON_TOKEN_FILE).read()
-        else:
-            token = None
-
-        appinfo = {
-                "extension_id": "playlistsyncer",
-                "display_name": "Playlist Syncer",
-                "display_version": "1.0.0",
-                "publisher": "marcelveldt",
-                "email": "my@email.com"
-            }
-        self.roonapi = RoonApi(appinfo, token, host=self.config["roon_server"], blocking_init=True)
-        time.sleep(3) # allow some time to fully initialize
-        with open(ROON_TOKEN_FILE, "w") as f:
-            f.write(self.roonapi.token)
-        self.available_providers.append("ROON")
 
     def login_tidal(self):
         '''log in to Tidal'''
@@ -263,7 +233,8 @@ class PlaylistSyncer():
                 continue
             if not playlist["destination_playlist"] or playlist["destination_playlist"] == "*":
                 playlist["destination_playlist"] = playlist["source_playlist"]
-            self.sync_playlist(playlist["source_provider"], playlist["source_playlist"], playlist["destination_provider"], playlist["destination_playlist"], playlist["add_library"])
+            create_m3u = playlist.get("create_m3u", False) and self.config.get("local_music_dir")
+            self.sync_playlist(playlist["source_provider"], playlist["source_playlist"], playlist["destination_provider"], playlist["destination_playlist"], playlist["add_library"], create_m3u)
             if playlist["two_way"]:
                 # also sync the other way around
                 self.sync_playlist(playlist["destination_provider"], playlist["destination_playlist"], playlist["source_provider"], playlist["source_playlist"], playlist["add_library"])
@@ -272,7 +243,7 @@ class PlaylistSyncer():
             self.find_duplicates_in_playlist(playlist["destination_provider"], playlist["destination_playlist"])
         #TODO: process wildcards
 
-    def sync_playlist(self, source_provider, source_playlist, destination_provider, destination_playlist, add_library):
+    def sync_playlist(self, source_provider, source_playlist, destination_provider, destination_playlist, add_library, create_m3u=False):
         ''' process all spotify playlists'''
         LOGGER.info(" ")
         LOGGER.info("### SYNCING %s/%s to %s/%s" % (source_provider, source_playlist, destination_provider, destination_playlist))
@@ -284,11 +255,7 @@ class PlaylistSyncer():
         cache_key = "%s_%s_%s_%s" %(source_provider, source_playlist, destination_provider, destination_playlist)
         tracks_cache = self.cache.get(cache_key,[])
         dest_tracks = self.get_playlist_tracks(destination_provider, destination_playlist)
-
-        unmatched_tracks_playlist = source_playlist + "__unmatched"
-        unmatched_tracks_provider = source_provider
-        unmatched_tracks_playlist_tracks = self.get_playlist_tracks(unmatched_tracks_provider, unmatched_tracks_playlist)
-        unmatched_tracks_playlist_trackids = [ item["id"] for item in unmatched_tracks_playlist_tracks ]
+        m3u_uris = []
         
         for track in src_tracks:
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
@@ -308,10 +275,23 @@ class PlaylistSyncer():
                     dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library)
                 if dest_match:
                     track["syncpartner_id"] = dest_match["id"]
+                    m3u_uris.append("%s://track/%s" %(destination_provider, dest_match['id']))
                 else:
+                    if create_m3u:
+                        local_match = self.find_match_file(track, source_provider)
+                        if local_match:
+                            m3u_uris.append(local_match)
+                        else:
+                            m3u_uris.append("%s://track/%s" %(source_provider, track['id']))
                     LOGGER.warning("Track %s could not be added to %s/%s" %(track_str, destination_provider, destination_playlist))
-                    if not track["id"] in unmatched_tracks_playlist_trackids:
-                        self.add_track_to_playlist(track, unmatched_tracks_provider, unmatched_tracks_playlist, False, track["id"])
+
+        # write m3u playlist
+        # todo: process deletions
+        if m3u_uris:
+            m3u_filename = os.path.join(self.config['local_music_dir'], '%s_.m3u' % destination_playlist)
+            with open(m3u_filename, 'a') as m3u_file:
+                for line in m3u_uris:
+                    m3u_file.write(line)
 
         # process track deletions
         LOGGER.info(" ")
@@ -333,20 +313,12 @@ class PlaylistSyncer():
             self.tidal_user.remove_playlist_entry(tidal_playlist.id, item_id=track_id)
         elif provider == "QOBUZ":
             qobuz_playlist = self.qobuz.get_playlist(playlist_name)
-            for track in self.get_qobuz_playlist_tracks(playlist_id=qobuz_playlist["id"]):
+            for track in self.get_qobuz_playlist_tracks(playlist_name):
                 if track["id"] == track_id:
                     self.qobuz.remove_playlist_tracks(qobuz_playlist["id"], track["playlist_track_id"])
         elif provider == "SPOTIFY":
             spotify_playlist = self.get_spotify_playlist(playlist_name)
             self.sp.user_playlist_remove_all_occurrences_of_tracks(spotify_playlist["owner"]["id"], spotify_playlist["id"], [track_id])
-        elif provider == "ROON":
-            # check if the track is in the special syncpartner list
-            sync_playlist = self.config["roon_syncpartner_prefix"] + playlist_name
-            roon_tracks = self.get_playlist_tracks(self.config["roon_syncpartner"], sync_playlist)
-            for item in roon_tracks:
-                if item["id"] == track_id:
-                    return self.remove_track_from_playlist(self.config["roon_syncpartner"], sync_playlist, track_id)
-            LOGGER.warning("%s should be manually removed from the ROON playlist %s" % (track_id, playlist_name))
 
     def find_match_in_tracks(self, track_left, tracks_right, prefer_quality=0, version_match=False, album_match=False):
         ''' match given track in list with tracks from other service'''
@@ -508,8 +480,6 @@ class PlaylistSyncer():
             return self.add_track_to_tidal_playlist(track_details, playlist_name, add_library, track_id)
         elif provider == "QOBUZ":
             return self.add_track_to_qobuz_playlist(track_details, playlist_name, add_library, track_id)
-        elif provider == "ROON":
-            return self.add_track_to_roon_playlist(track_details, playlist_name, add_library, track_id)
         elif provider == "SPOTIFY":
             return self.add_track_to_spotify_playlist(track_details, playlist_name, add_library, track_id)
         else:
@@ -569,25 +539,6 @@ class PlaylistSyncer():
         else:
             return None
 
-    def add_track_to_roon_playlist(self, track_details, playlist_name, add_library=False, track_id=None):
-        '''add track to roon playlist (using syncpartner temp playlist)'''
-        playlist = self.config["roon_syncpartner_prefix"] + playlist_name
-        result = None
-        if self.config["roon_syncpartner"] == "TIDAL":
-            result = self.add_track_to_tidal_playlist(track_details, playlist, add_library)
-        elif self.config["roon_syncpartner"] == "QOBUZ":
-            result = self.add_track_to_qobuz_playlist(track_details, playlist, add_library)
-        if not result:
-            # try to grab from file
-            file_result = self.find_match_file(track_details)
-            if file_result:
-                LOGGER.info("Track available as file, you should manually add it to the Roon Playlist %s --> %s" %(playlist_name, file_result))
-                temp_track = track_details
-                temp_track["id"] = file_result
-                result = temp_track
-        return result
-
-
     ###### PLAYLISTS ##################
 
     def get_spotify_playlists(self):
@@ -606,14 +557,6 @@ class PlaylistSyncer():
             return self.sp.user_playlist_create(self.sp_user["id"], playlist_name, public=False)
         return None
 
-    def get_roon_playlists(self):
-        returned_playlists = []
-        for playlist in self.get_all_roon_items(["Playlists"]):
-            playlist = playlist["title"]
-            if not playlist.startswith(SYNCPARTNER_ROON_PREFIX) and not playlist.startswith(SYNCPARTNER_SPOTIFY_PREFIX):
-                returned_playlists.append(playlist)
-        return returned_playlists
-
     def get_tidal_playlist(self, playlist_name, allow_create=True):
         for playlist in self.tidal_user.playlists():
             if playlist.title == playlist_name:
@@ -621,7 +564,7 @@ class PlaylistSyncer():
         # create playlist if not found
         if allow_create:
             LOGGER.warning("Playlist %s not found on Tidal, creating it..." % playlist_name)
-            return self.tidal_user.create_playlist(name)
+            return self.tidal_user.create_playlist(playlist_name)
         return None
 
     def get_tidal_playlists(self, filter=None):
@@ -636,7 +579,6 @@ class PlaylistSyncer():
         return playlists
 
     
-
     ##### PLAYLIST TRACKS ##############
 
     def get_playlist_tracks(self, provider, playlist_name):
@@ -644,8 +586,6 @@ class PlaylistSyncer():
             return self.get_tidal_playlist_tracks(playlist_name)
         elif provider == "QOBUZ":
             return self.get_qobuz_playlist_tracks(playlist_name)
-        elif provider == "ROON":
-            return self.get_roon_playlist_tracks(playlist_name)
         elif provider == "SPOTIFY":
             return self.get_spotify_playlist_tracks(playlist_name)
         else:
@@ -657,14 +597,6 @@ class PlaylistSyncer():
             return []
         result = self.tidal_session.get_playlist_tracks(tidal_playlist.id)
         return self.parse_tidal_tracks(result)
-
-    def get_roon_playlist_tracks(self, playlist_name):
-        '''grab all tracks for the given playlist'''
-        sync_playlist = self.config["roon_syncpartner_prefix"] + playlist_name
-        roon_tracks = self.parse_roon_tracks( self.get_all_roon_items(["Playlists", playlist_name]) )
-        # append any tracks in the sync playlist
-        roon_tracks += self.get_playlist_tracks(self.config["roon_syncpartner"], sync_playlist)
-        return roon_tracks
 
     def get_qobuz_playlist_tracks(self, playlist_name):
         '''grab all tracks for the given playlist'''
@@ -686,46 +618,6 @@ class PlaylistSyncer():
                 break
         return self.parse_spotify_tracks(all_tracks)
 
-
-    #### ROON HELPERS ############
-
-    def get_roon_library_albums(self):
-        try:
-            return self.__roon_albums
-        except AttributeError:
-            pass
-        result = self.get_all_roon_items(["Library", "Albums"])
-        self.__roon_albums = result
-        return result
-
-    def get_all_roon_items(self, path):
-        roon_items = []
-        offset = 0
-        retries = 0
-        total_items = 1
-        item_count = 0
-        LOGGER.debug("Retrieving %s from Roon...." % "/".join(path))
-        while item_count < total_items:
-            result = self.roonapi.browse_by_path(path, offset=offset)
-            if not result or not "list" in result or (result["list"]["title"] != path[-1] or result["offset"] != offset):
-                LOGGER.debug("invalid response from roon api, retrying...")
-                if retries > 5:
-                    raise Exception("Invalid api response")
-                else:
-                    retries +=1
-                    time.sleep(1)
-                    continue
-            total_items = result["list"]["count"]
-            item_count += len(result["items"])
-            offset += 100
-            retries = 0
-            for item in result["items"]:
-                if item["subtitle"] and item["title"]:
-                    roon_items.append(item)
-        LOGGER.debug("Retrieved %s items for %s" % (len(roon_items), "/".join(path)))
-        return roon_items
-
-    
 
     ###### HELPER METHODS ###########
 
@@ -826,121 +718,42 @@ class PlaylistSyncer():
     def get_filename(str):
         return str.replace("/","").replace(",","")
 
-    def find_match_file(self, track_details):
-        tmp_file = None
-        if not self.config["roon_music_dir"]:
-            return
-
-        # todo: iterate through files to get match
-
-        # try to grab the track from tidal
-        tidal_match = self.search_track_tidal(track_details)
-        if tidal_match:
-            import urllib2
-            artists = tidal_match["artists"]
-            title = tidal_match["title"]
-            album = tidal_match["album"]
-            stream_url = self.tidal_session.get_media_url(tidal_match["id"])
-            file_contents = urllib2.urlopen(stream_url)
-            if tidal_match["quality"] == 0:
-                tmp_file = "/tmp/%s.m4a" % tidal_match["id"]
-            else:
-                tmp_file = "/tmp/%s.flac" % tidal_match["id"]
-            with open(tmp_file,'wb') as output:
-                output.write(file_contents.read())
-        # try to grab the track from spotify
-        if not tmp_file:
-            # ./spotty -n test -u marcelveldt3 -p S94eboeg --single-track 25sgk305KZfyuqVBQIahim | flac - --endian little --channels 2 --bps 16 --sample-rate 44100 --sign signed -f -o /Volumes/share/usb/test.flac
-            spotify_match = self.search_track_spotify(track_details)
-            if not spotify_match:
-                result = self.sp.tracks([track_details["id"]], market='from_token')
-                if result and result.get("tracks"):
-                    spotify_match = self.parse_spotify_tracks(result["tracks"])[0]
-            if spotify_match:
-                import subprocess
-                artists = spotify_match["artists"]
-                title = spotify_match["title"]
-                album = spotify_match["album"]
-                tmp_file = "/tmp/%s.flac" % spotify_match["id"]
-                cmd = "%s -n test -u %s -p %s --single-track %s | flac - --endian little --channels 2 --bps 16 --sample-rate 44100 --sign signed -f -o %s" % (self.get_spotty_binary(), self.config["spotify_username"], self.config["spotify_password"], spotify_match["id"], tmp_file)
-                subprocess.call(cmd, shell=True)
-        # if we have a file, write tags and move to final location        
-        if tmp_file:
+    def find_match_file(self, track_details, provider):
+        ''' try to find a match in files'''
+        if not self.config["local_music_dir"]:
+            return None
+        artists = track_details['artists']
+        title = track_details['title']
+        album = track_details['album']
+        clean_artist = self.get_filename(artists[0])
+        clean_title = self.get_filename(title)
+        if not album:
+            album = title
+        clean_album = self.get_filename(album)
+        file_dir = "%s/%s/%s" % (self.config["local_music_dir"], clean_artist, clean_album)
+        filename = "%s/%s - %s.flac" % (file_dir, clean_artist, clean_title)
+        if os.path.isfile(filename):
+            return filename
+        elif provider == "SPOTIFY":
+            # grab file from spotify just as workaround for now and as last resort
+            tmp_file = None
+            import subprocess
+            tmp_file = "/tmp/%s.flac" % track_details["id"]
+            cmd = "%s -n test -u %s -p %s --single-track %s | flac - --endian little --channels 2 --bps 16 --sample-rate 44100 --sign signed -f -o %s" % (self.get_spotty_binary(), self.config["spotify_username"], self.config["spotify_password"], track_details["id"], tmp_file)
+            subprocess.call(cmd, shell=True)
             import shutil
             time.sleep(1)
-            # if not ".m4a" in tmp_file and os.path.getsize(tmp_file) < 10485760:
-            #     filename = filename.replace(".flac", ".m4a")
-            #     shutil.move(tmp_file, tmp_file.replace(".flac", ".m4a"))
-            #     tmp_file = tmp_file.replace(".flac", ".m4a")
             song = taglib.File(tmp_file)
             song.tags["ARTIST"] = artists
             song.tags["TITLE"] = [title]
             song.tags["ALBUM"] = [album]
             song.save()
             # save to final dest
-            clean_artist = self.get_filename(artists[0])
-            clean_title = self.get_filename(title)
-            if not album:
-                album = title
-            clean_album = self.get_filename(album)
-            file_dir = "%s/%s/%s" % (self.config["roon_music_dir"], clean_artist, clean_album)
-            filename = "%s/%s - %s.%s" % (file_dir, clean_artist, clean_title, tmp_file.split(".")[-1])
             if not os.path.exists(file_dir):
                 os.makedirs(file_dir)
             shutil.move(tmp_file, filename)
             return filename
         return None
-
-    def parse_roon_tracks(self, roon_tracks):
-        ''' convert output from Roon to universal layout '''
-        result = []
-        roon_albums = self.get_roon_library_albums()
-        for roon_track in roon_tracks:
-            item = { 
-                "id": "%s%s" %(roon_track["image_key"], roon_track["title"]), 
-                "title": roon_track["title"], 
-                "album":"", 
-                "album_id": None,
-                "artists": [],
-                "quality": 1
-            }
-            # append album details 
-            for roon_album in roon_albums:
-                if roon_track["image_key"] and roon_album["image_key"] == roon_track["image_key"] and roon_album["subtitle"] != "Various Artists":
-                    item["album"] = roon_album["title"]
-                    item["album_id"] = "%s%s" %(roon_album["image_key"], roon_album["title"])
-                    # prefer album artist as main artist
-                    album_artist = roon_album["subtitle"].split(", ")[0]
-                    if not "various artists" in album_artist.lower():
-                        item["artists"].append(album_artist)
-                    break
-            for artist in roon_track["subtitle"].split(", "):
-                if artist not in item["artists"] and not "various artists" in artist.lower():
-                    item["artists"].append(artist)
-            if not item["artists"]:
-                # wacky track found which is missing an artist
-                LOGGER.info("Track is missing artist - please correct this first!! - %s" % item["title"])
-                sys.exit(1)
-                # # try to find the track in the tracks library
-                # match_found = False
-                # for library_track in self.get_roon_library_tracks():
-                #     if library_track["image_key"] == roon_track["image_key"] and library_track["title"] == roon_track["title"]:
-                #         if not "Various Artists" in library_track["subtitle"]:
-                #             item["artists"] += library_track["subtitle"].split(", ")
-                #             match_found = True
-                # if not match_found:
-                #     # last result to match by title only (tricky!)
-                #     for library_track in self.get_roon_library_tracks():
-                #         if library_track["title"] == roon_track["title"]:
-                #             if not "Various Artists" in library_track["subtitle"]:
-                #                 item["artists"] += library_track["subtitle"].split(", ")
-                #                 match_found = True
-                # if not match_found:
-                #     LOGGER.warning("Artist lookup failed, skipping this track - %s" % roon_track["title"])
-                #     continue
-            item["version"] = self.parse_track_version(item["title"], item["album"])
-            result.append(item)
-        return result
 
     def parse_spotify_tracks(self, spotify_tracks):
         ''' convert output from Spotify to universal layout '''
