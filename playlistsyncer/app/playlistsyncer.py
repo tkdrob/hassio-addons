@@ -277,14 +277,14 @@ class PlaylistSyncer():
                     dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library)
                 if dest_match:
                     track["syncpartner_id"] = dest_match["id"]
-                    m3u_uri = "%s://track/%s" %(destination_provider, dest_match['id'])
+                    m3u_uri = self.create_track_uri(track, destination_provider)
                 else:
                     local_match = self.find_match_file(track, source_provider)
                     if local_match:
                         m3u_uri = local_match
                         LOGGER.warning("Track %s matched to local file: %s" %(track_str, local_match))
                     else:
-                        m3u_uri = "%s://track/%s" %(source_provider, track['id'])
+                        m3u_uri = self.create_track_uri(track, source_provider)
                         LOGGER.warning("Track %s could not be added to %s/%s" %(track_str, destination_provider, destination_playlist))
             track["m3u_uri"] = m3u_uri
             m3u_uris.append(m3u_uri)
@@ -930,6 +930,15 @@ class PlaylistSyncer():
             if ignore_phrase not in title_left.lower() and ignore_phrase in title_right.lower():
                 return False
         return True
+
+    @staticmethod
+    def create_track_uri(track_details, provider):
+        ''' create uri to use in m3u file which LMS can understand '''
+        if provider == "QOBUZ":
+            uri = "qobuz://%s.flac" % track_details['id']
+        else:
+            uri = "%s://track:%s" % (provider.lower(), track_details['id'])
+        return uri
 
     @staticmethod
     def get_spotty_binary():
