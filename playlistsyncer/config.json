@@ -1,6 +1,6 @@
 {
   "name": "Playlistsyncer",
-  "version": "0.0.35",
+  "version": "0.0.37",
   "description": "Sync playlists",
   "slug": "playlist_syncer",
   "startup": "application",
@@ -27,7 +27,8 @@
         "destination_provider": "QOBUZ",
         "destination_playlist": "MyPlaylist",
         "two_way": true,
-        "add_library": false
+        "add_library": false,
+        "allow_other_version": true
       }
       ]
   },
@@ -52,7 +53,8 @@
         "destination_playlist": "str",
         "two_way": "bool",
         "add_library": "bool",
-        "m3u_playlist": "str?"
+        "m3u_playlist": "str?",
+        "allow_other_version": "bool?"
       }
     ]
   }

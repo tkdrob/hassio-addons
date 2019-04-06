@@ -233,16 +233,17 @@ class PlaylistSyncer():
             if not playlist["destination_playlist"] or playlist["destination_playlist"] == "*":
                 playlist["destination_playlist"] = playlist["source_playlist"]
             m3u_playlist = playlist.get("m3u_playlist")
-            self.sync_playlist(playlist["source_provider"], playlist["source_playlist"], playlist["destination_provider"], playlist["destination_playlist"], playlist["add_library"], m3u_playlist)
+            allow_other_version = playlist.get("allow_other_version", False)
+            self.sync_playlist(playlist["source_provider"], playlist["source_playlist"], playlist["destination_provider"], playlist["destination_playlist"], playlist["add_library"], allow_other_version, m3u_playlist)
             if playlist["two_way"]:
                 # also sync the other way around
-                self.sync_playlist(playlist["destination_provider"], playlist["destination_playlist"], playlist["source_provider"], playlist["source_playlist"], playlist["add_library"])
+                self.sync_playlist(playlist["destination_provider"], playlist["destination_playlist"], playlist["source_provider"], playlist["source_playlist"], playlist["add_library"], allow_other_version)
             # look for duplicate tracks
             self.find_duplicates_in_playlist(playlist["source_provider"], playlist["source_playlist"])
             self.find_duplicates_in_playlist(playlist["destination_provider"], playlist["destination_playlist"])
         #TODO: process wildcards
 
-    def sync_playlist(self, source_provider, source_playlist, destination_provider, destination_playlist, add_library, m3u_playlist=None):
+    def sync_playlist(self, source_provider, source_playlist, destination_provider, destination_playlist, add_library, allow_other_version, m3u_playlist=None):
         ''' process all spotify playlists'''
         LOGGER.info(" ")
         LOGGER.info("### SYNCING %s/%s to %s/%s" % (source_provider, source_playlist, destination_provider, destination_playlist))
@@ -273,7 +274,7 @@ class PlaylistSyncer():
                         track_str2 = "%s - %s" % ("/".join(dest_match["artists"]), dest_match["title"])
                         LOGGER.warning("Matched with different version ! %s: %s - %s: %s" %(source_provider, track_str, destination_provider, track_str2))
                 if not dest_match:
-                    dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library)
+                    dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library, allow_other_version)
                 if dest_match:
                     track["syncpartner_id"] = dest_match["id"]
                     m3u_uris.append( self.create_track_uri(track, destination_provider) )
@@ -413,7 +414,7 @@ class PlaylistSyncer():
 
     ####### SEARCH TRACKS ######################
 
-    def search_track(self, track_details, provider):
+    def search_track(self, track_details, provider, version_match=True):
         ''' locate track on streaming provider'''
         minimum_qualities = [0]
         if provider == "TIDAL":
@@ -445,45 +446,52 @@ class PlaylistSyncer():
                         self.search_cache[searchstring] = results
                         if results:
                             match = self.find_match_in_tracks(track_details, results, 
-                                    prefer_quality=minimum_quality, album_match=album_match, version_match=True)
+                                    prefer_quality=minimum_quality, album_match=album_match, version_match=version_match)
                             if match:
                                 return match
-                            elif minimum_quality and not match:
+                            elif minimum_quality and not match and version_match:
                                 other_match = self.find_match_in_tracks(track_details, results, 
                                     prefer_quality=minimum_quality, album_match=False, version_match=False)
-                                # if other_match and other_match["version"].lower() in ["remaster", "stereo", "hi-res", "live", "mono", "single", "album"]:
-                                #     LOGGER.info("Accepting other version ")
                                 if other_match:
                                     LOGGER.warning("Match available with better quality (%s)! %s" % (other_match["quality"], other_match["title"]))
         return None
 
-    def search_track_spotify(self, track_details):
+    def search_track_spotify(self, track_details, version_match=True):
         ''' locate track on spotify'''
-        return self.search_track(track_details, "SPOTIFY")
+        return self.search_track(track_details, "SPOTIFY", version_match)
 
-    def search_track_tidal(self, track_details):
+    def search_track_tidal(self, track_details, version_match=True):
         ''' locate track on tidal'''
-        return self.search_track(track_details, "TIDAL")
+        return self.search_track(track_details, "TIDAL", version_match)
 
-    def search_track_qobuz(self, track_details):
+    def search_track_qobuz(self, track_details, version_match=True):
         ''' locate track on qobuz'''
-        return self.search_track(track_details, "QOBUZ")
+        return self.search_track(track_details, "QOBUZ", version_match)
 
     
 
     ####### ADD TRACK TO PLAYLIST ####################
 
-    def add_track_to_playlist(self, track_details, provider, playlist_name, add_library=False, track_id=None):
-        if provider == "TIDAL":
-            return self.add_track_to_tidal_playlist(track_details, playlist_name, add_library, track_id)
-        elif provider == "QOBUZ":
-            return self.add_track_to_qobuz_playlist(track_details, playlist_name, add_library, track_id)
-        elif provider == "SPOTIFY":
-            return self.add_track_to_spotify_playlist(track_details, playlist_name, add_library, track_id)
-        else:
-            return None
+    def add_track_to_playlist(self, track_details, provider, playlist_name, add_library=False, track_id=None, allow_other_version=False):
+        ''' search and add track to playlist '''
+        track_str = "%s - %s" % ("/".join(track_details["artists"]), track_details["title"])
+        result = None
+        for version_match in [True, not allow_other_version]:
+            if provider == "TIDAL":
+                result = self.add_track_to_tidal_playlist(track_details, playlist_name, add_library, track_id, version_match)
+            elif provider == "QOBUZ":
+                result = self.add_track_to_qobuz_playlist(track_details, playlist_name, add_library, track_id, version_match)
+            elif provider == "SPOTIFY":
+                result = self.add_track_to_spotify_playlist(track_details, playlist_name, add_library, track_id, version_match)
+            if result:
+                track_str2 = "%s - %s" % ("/".join(result["artists"]), result["title"])
+                if version_match == False:
+                    LOGGER.warning("Accepted different version ! %s --> %s" %(track_str, track_str2))
+                return result
+        return None
 
-    def add_track_to_tidal_playlist(self, track_details, playlist_name, add_library=False, track_id=None):
+
+    def add_track_to_tidal_playlist(self, track_details, playlist_name, add_library=False, track_id=None, version_match=True):
         ''' attempt to add a track to a Tidal playlist '''
         tidal_playlist = self.get_tidal_playlist(playlist_name, True)
         tidal_track = self.search_track_tidal(track_details)
@@ -500,7 +508,7 @@ class PlaylistSyncer():
         else:
             return None
 
-    def add_track_to_qobuz_playlist(self, track_details, playlist_name, add_library=False, track_id=None):
+    def add_track_to_qobuz_playlist(self, track_details, playlist_name, add_library=False, track_id=None, version_match=True):
         ''' attempt to add a track to a Qobuz playlist '''
         qobuz_playlist = self.qobuz.get_playlist(playlist_name, True)
         qobuz_track = self.search_track_qobuz(track_details)
@@ -522,7 +530,7 @@ class PlaylistSyncer():
         else:
             return None
 
-    def add_track_to_spotify_playlist(self, track_details, playlist_name, add_library=False, track_id=None):
+    def add_track_to_spotify_playlist(self, track_details, playlist_name, add_library=False, track_id=None, version_match=True):
         '''add track to spotify playlist'''
         playlist = self.get_spotify_playlist(playlist_name)
         if track_id:
