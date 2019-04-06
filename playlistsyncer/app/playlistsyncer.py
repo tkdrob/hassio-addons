@@ -262,7 +262,7 @@ class PlaylistSyncer():
             cache_match = self.find_match_in_tracks(track, tracks_cache)
             if cache_match and not self.force_full_sync:
                 LOGGER.debug("%s present in cache and will be ignored this run" % track_str)
-                track["syncpartner_id"] = cache_match["syncpartner_id"]
+                track["syncpartner_id"] = cache_match.get("syncpartner_id")
                 m3u_uri = track.get("m3u_uri","")
             else:
                 # this track is not in the cache from last run so it's added (or this is a full sync)
