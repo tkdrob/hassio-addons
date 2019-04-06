@@ -916,7 +916,7 @@ class PlaylistSyncer():
             else:
                 item["version"] = self.parse_track_version(item["title"], item["album"])
             if 'playlist_track_id' in track:
-                result['playlist_track_id'] = track['playlist_track_id']
+                item['playlist_track_id'] = track['playlist_track_id']
             result.append(item)
         return result
 
