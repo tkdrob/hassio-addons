@@ -40,7 +40,10 @@ class QobuzApi(object):
     def get_playlist_tracks(self, playlist_id=None, playlist_name=None):
         ''' get playlist tracks '''
         if not playlist_id:
-            playlist_id = self.get_playlist(playlist_name)["id"]
+            playlist = self.get_playlist(playlist_name)
+            if not playlist:
+                return None
+            playlist_id = playlist["id"]
         params = {"playlist_id": playlist_id, "extra": "tracks"}
         result = self.__get_all_items("playlist/get", params, key="tracks")
         return result
