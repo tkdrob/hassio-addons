@@ -263,8 +263,12 @@ class PlaylistSyncer():
             cache_match = self.find_match_in_tracks(track, tracks_cache)
             if cache_match and not self.force_full_sync:
                 LOGGER.debug("%s present in cache and will be ignored this run" % track_str)
-                track["syncpartner_id"] = cache_match["syncpartner_id"]
-                m3u_entries.append( self.create_m3u_entry(cache_match["syncpartner_id"], track_str, destination_provider) )
+                if cache_match.get('syncpartner_id'):
+                    track["syncpartner_id"] = cache_match["syncpartner_id"]
+                if cache_match.get('m3u_entry'):
+                    m3u_entry = cache_match['m3u_entry']
+                    m3u_entries.append( m3u_entry )
+                    track['m3u_entry'] = m3u_entry
             else:
                 # this track is not in the cache from last run so it's added (or this is a full sync)
                 dest_match = self.find_match_in_tracks(track, dest_tracks, version_match=True)
@@ -278,14 +282,20 @@ class PlaylistSyncer():
                     dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library, allow_other_version)
                 if dest_match:
                     track["syncpartner_id"] = dest_match["id"]
-                    m3u_entries.append( self.create_m3u_entry(dest_match['id'], track_str, destination_provider) )
+                    m3u_entry = self.create_m3u_entry(dest_match['id'], track_str, destination_provider)
+                    m3u_entries.append( m3u_entry )
+                    track['m3u_entry'] = m3u_entry
                 else:
                     local_match = self.find_match_file(track, source_provider)
                     if local_match:
-                        m3u_entries.append( self.create_m3u_entry(local_match, track_str, 'FILE') )
+                        m3u_entry = self.create_m3u_entry(local_match, track_str, 'FILE')
+                        m3u_entries.append( m3u_entry )
+                        track['m3u_entry'] = m3u_entry
                         LOGGER.warning("Track %s matched to local file: %s" %(track_str, local_match))
                     else:
-                        m3u_entries.append( self.create_m3u_entry(track['id'], track_str, source_provider) )
+                        m3u_entry = self.create_m3u_entry(track['id'], track_str, source_provider)
+                        m3u_entries.append( m3u_entry )
+                        track['m3u_entry'] = m3u_entry
                         LOGGER.warning("Track %s could not be added to %s/%s" %(track_str, destination_provider, destination_playlist))
 
         # write m3u playlist
