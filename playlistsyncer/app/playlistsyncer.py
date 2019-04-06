@@ -290,7 +290,7 @@ class PlaylistSyncer():
             m3u_filename = os.path.join(self.config['local_music_dir'], '%s - %s.m3u' %(destination_playlist, source_provider))
             with open(m3u_filename, 'a+') as m3u_file:
                 for line in m3u_uris:
-                    m3u_file.writeline(line)
+                    m3u_file.write(line + '\n')
 
         # process track deletions
         LOGGER.info(" ")
