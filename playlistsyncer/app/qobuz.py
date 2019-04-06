@@ -30,12 +30,12 @@ class QobuzApi(object):
         ''' get the playlists of teh current user '''
         return self.__get_all_items("playlist/getUserPlaylists", key="playlists")
 
-    def get_playlist(self, name, create_if_not_exists=True):
+    def get_playlist(self, name, create_if_not_exists=False):
         ''' get playlist by name '''
         for playlist in self.get_playlists():
             if playlist["name"] == name:
                 return playlist
-        return self.create_playlist(name)
+        return self.create_playlist(name) if create_if_not_exists else None
 
     def get_playlist_tracks(self, playlist_id=None, playlist_name=None):
         ''' get playlist tracks '''
@@ -124,7 +124,7 @@ class QobuzApi(object):
         '''
         if isinstance(playlist_track_ids, list):
             playlist_track_ids = [str(item) for item in playlist_track_ids]
-            playlist_track_ids = ",".join(track_ids)
+            playlist_track_ids = ",".join(playlist_track_ids)
         else:
             playlist_track_ids = str(playlist_track_ids)
         params = {"playlist_id": str(playlist_id), "playlist_track_ids": playlist_track_ids}

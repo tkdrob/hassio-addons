@@ -257,8 +257,17 @@ class PlaylistSyncer():
         tracks_cache = self.cache.get(cache_key,[])
         dest_tracks = self.get_playlist_tracks(destination_provider, destination_playlist)
         m3u_entries = []
+        dest_tracks_count = len(dest_tracks) # funky workaround for qobuz 1000 tracks limit
         
         for track in src_tracks:
+            if destination_provider == 'QOBUZ':
+                # funky workaround for qobuz 1000 tracks limit
+                if dest_tracks_count > 3000:
+                    destination_playlist = destination_playlist + "__3"
+                elif dest_tracks_count > 2000:
+                    destination_playlist = destination_playlist + "__2"
+                elif dest_tracks_count > 1000:
+                    destination_playlist = destination_playlist + "__1"
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
             cache_match = self.find_match_in_tracks(track, tracks_cache)
             if cache_match and not self.force_full_sync and 'm3u_entry' in cache_match:
@@ -280,6 +289,7 @@ class PlaylistSyncer():
                 if not dest_match:
                     dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library, allow_other_version)
                 if dest_match:
+                    dest_tracks_count += 1
                     track["syncpartner_id"] = dest_match["id"]
                     m3u_entry = self.create_m3u_entry(dest_match['id'], track_str, destination_provider)
                     m3u_entries.append( m3u_entry )
@@ -615,7 +625,14 @@ class PlaylistSyncer():
 
     def get_qobuz_playlist_tracks(self, playlist_name):
         '''grab all tracks for the given playlist'''
-        result = self.qobuz.get_playlist_tracks(playlist_name=playlist_name)
+        result = []
+        for postfix in ["","__1","__2","__3"]: # funky workaround for 1000 tracks limit of qobuz
+            playlist_name = playlist_name + postfix
+            res = self.qobuz.get_playlist_tracks(playlist_name=playlist_name)
+            if res:
+                result += res
+            else:
+                break
         return self.parse_qobuz_tracks(result)
 
     def get_spotify_playlist_tracks(self, playlist_name):
