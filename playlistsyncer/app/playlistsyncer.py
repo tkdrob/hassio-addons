@@ -261,14 +261,13 @@ class PlaylistSyncer():
         for track in src_tracks:
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
             cache_match = self.find_match_in_tracks(track, tracks_cache)
-            if cache_match and not self.force_full_sync:
+            if cache_match and not self.force_full_sync and 'm3u_entry' in cache_match:
                 LOGGER.debug("%s present in cache and will be ignored this run" % track_str)
                 if cache_match.get('syncpartner_id'):
                     track["syncpartner_id"] = cache_match["syncpartner_id"]
                 if cache_match.get('m3u_entry'):
-                    m3u_entry = cache_match['m3u_entry']
-                    m3u_entries.append( m3u_entry )
-                    track['m3u_entry'] = m3u_entry
+                    m3u_entries.append( cache_match['m3u_entry'] )
+                    track['m3u_entry'] = cache_match['m3u_entry']
             else:
                 # this track is not in the cache from last run so it's added (or this is a full sync)
                 dest_match = self.find_match_in_tracks(track, dest_tracks, version_match=True)
