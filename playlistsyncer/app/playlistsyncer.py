@@ -484,17 +484,17 @@ class PlaylistSyncer():
 
     ####### ADD TRACK TO PLAYLIST ####################
 
-    def add_track_to_playlist(self, track_details, provider, playlist_name, add_library=False, track_id=None, allow_other_version=False):
+    def add_track_to_playlist(self, track_details, provider, playlist_name, add_library=False, allow_other_version=False):
         ''' search and add track to playlist '''
         track_str = "%s - %s" % ("/".join(track_details["artists"]), track_details["title"])
         result = None
         for version_match in [True, not allow_other_version]:
             if provider == "TIDAL":
-                result = self.add_track_to_tidal_playlist(track_details, playlist_name, add_library, track_id, version_match)
+                result = self.add_track_to_tidal_playlist(track_details, playlist_name, add_library, version_match)
             elif provider == "QOBUZ":
-                result = self.add_track_to_qobuz_playlist(track_details, playlist_name, add_library, track_id, version_match)
+                result = self.add_track_to_qobuz_playlist(track_details, playlist_name, add_library, version_match)
             elif provider == "SPOTIFY":
-                result = self.add_track_to_spotify_playlist(track_details, playlist_name, add_library, track_id, version_match)
+                result = self.add_track_to_spotify_playlist(track_details, playlist_name, add_library, version_match)
             if result:
                 track_str2 = "%s - %s" % ("/".join(result["artists"]), result["title"])
                 if version_match == False:
@@ -503,10 +503,10 @@ class PlaylistSyncer():
         return None
 
 
-    def add_track_to_tidal_playlist(self, track_details, playlist_name, add_library=False, track_id=None, version_match=True):
+    def add_track_to_tidal_playlist(self, track_details, playlist_name, add_library=False, version_match=True):
         ''' attempt to add a track to a Tidal playlist '''
         tidal_playlist = self.get_tidal_playlist(playlist_name, True)
-        tidal_track = self.search_track_tidal(track_details)
+        tidal_track = self.search_track_tidal(track_details, version_match)
         if tidal_track:
             if add_library:
                 self.tidal_favorites.add_album(str(tidal_track["album_id"]))
@@ -520,10 +520,10 @@ class PlaylistSyncer():
         else:
             return None
 
-    def add_track_to_qobuz_playlist(self, track_details, playlist_name, add_library=False, track_id=None, version_match=True):
+    def add_track_to_qobuz_playlist(self, track_details, playlist_name, add_library=False, version_match=True):
         ''' attempt to add a track to a Qobuz playlist '''
         qobuz_playlist = self.qobuz.get_playlist(playlist_name, True)
-        qobuz_track = self.search_track_qobuz(track_details)
+        qobuz_track = self.search_track_qobuz(track_details, version_match)
         if qobuz_track:
             track_str = "%s - %s" % ("/".join(qobuz_track["artists"]), qobuz_track["title"])
             if add_library:
@@ -542,13 +542,10 @@ class PlaylistSyncer():
         else:
             return None
 
-    def add_track_to_spotify_playlist(self, track_details, playlist_name, add_library=False, track_id=None, version_match=True):
+    def add_track_to_spotify_playlist(self, track_details, playlist_name, add_library=False, version_match=True):
         '''add track to spotify playlist'''
         playlist = self.get_spotify_playlist(playlist_name)
-        if track_id:
-            sp_track = track_details
-        else:
-            sp_track = self.search_track_spotify(track_details)
+        sp_track = self.search_track_spotify(track_details, version_match)
         if sp_track:
             self.sp.user_playlist_add_tracks(self.sp_user["id"], playlist["id"], [sp_track["id"]])
             track_str = "%s - %s" %("/".join(sp_track["artists"]), sp_track["title"])
