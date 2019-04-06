@@ -955,7 +955,7 @@ class PlaylistSyncer():
         else:
             uri = "%s://track:%s" % (provider.lower(), track_id)
         m3u_entry = '#EXTURL:%s\n' % uri
-        m3u_entry += '#EXTINF:-1,%s\n' % uri
+        m3u_entry += '#EXTINF:-1,%s\n' % track_str
         m3u_entry += '%s\n' % uri
         return m3u_entry
 
