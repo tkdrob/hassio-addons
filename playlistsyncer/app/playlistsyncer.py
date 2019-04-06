@@ -258,12 +258,11 @@ class PlaylistSyncer():
         
         for track in src_tracks:
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
-            m3u_uri = ""
             cache_match = self.find_match_in_tracks(track, tracks_cache)
-            if cache_match and not self.force_full_sync:
+            if cache_match and not self.force_full_sync and cache_match.get("syncpartner_id"):
                 LOGGER.debug("%s present in cache and will be ignored this run" % track_str)
                 track["syncpartner_id"] = cache_match.get("syncpartner_id")
-                m3u_uri = track.get("m3u_uri","")
+                m3u_uris.append( self.create_track_uri(cache_match, destination_provider) )
             else:
                 # this track is not in the cache from last run so it's added (or this is a full sync)
                 dest_match = self.find_match_in_tracks(track, dest_tracks, version_match=True)
@@ -277,17 +276,15 @@ class PlaylistSyncer():
                     dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library)
                 if dest_match:
                     track["syncpartner_id"] = dest_match["id"]
-                    m3u_uri = self.create_track_uri(track, destination_provider)
+                    m3u_uris.append( self.create_track_uri(track, destination_provider) )
                 else:
                     local_match = self.find_match_file(track, source_provider)
                     if local_match:
-                        m3u_uri = local_match
+                        m3u_uris.append( local_match )
                         LOGGER.warning("Track %s matched to local file: %s" %(track_str, local_match))
                     else:
-                        m3u_uri = self.create_track_uri(track, source_provider)
+                        m3u_uris.append( self.create_track_uri(track, source_provider) )
                         LOGGER.warning("Track %s could not be added to %s/%s" %(track_str, destination_provider, destination_playlist))
-            track["m3u_uri"] = m3u_uri
-            m3u_uris.append(m3u_uri)
 
         # write m3u playlist
         if m3u_playlist:
