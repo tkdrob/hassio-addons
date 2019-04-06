@@ -232,7 +232,7 @@ class PlaylistSyncer():
                 continue
             if not playlist["destination_playlist"] or playlist["destination_playlist"] == "*":
                 playlist["destination_playlist"] = playlist["source_playlist"]
-            m3u_playlist = playlist.get("create_m3u")
+            m3u_playlist = playlist.get("m3u_playlist")
             self.sync_playlist(playlist["source_provider"], playlist["source_playlist"], playlist["destination_provider"], playlist["destination_playlist"], playlist["add_library"], m3u_playlist)
             if playlist["two_way"]:
                 # also sync the other way around
@@ -288,7 +288,6 @@ class PlaylistSyncer():
                         LOGGER.warning("Track %s could not be added to %s/%s" %(track_str, destination_provider, destination_playlist))
             track["m3u_uri"] = m3u_uri
             m3u_uris.append(m3u_uri)
-
 
         # write m3u playlist
         if m3u_playlist:
