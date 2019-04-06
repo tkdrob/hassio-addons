@@ -260,10 +260,10 @@ class PlaylistSyncer():
         for track in src_tracks:
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
             cache_match = self.find_match_in_tracks(track, tracks_cache)
-            if cache_match and not self.force_full_sync and cache_match.get("syncpartner_id"):
+            if cache_match and not self.force_full_sync:
                 LOGGER.debug("%s present in cache and will be ignored this run" % track_str)
                 track["syncpartner_id"] = cache_match["syncpartner_id"]
-                m3u_uris.append( self.create_track_uri(cache_match["syncpartner_id"], destination_provider) )
+                m3u_uri = self.create_track_uri(cache_match["syncpartner_id"], destination_provider)
             else:
                 # this track is not in the cache from last run so it's added (or this is a full sync)
                 dest_match = self.find_match_in_tracks(track, dest_tracks, version_match=True)
@@ -293,7 +293,7 @@ class PlaylistSyncer():
                 m3u_file.write('#EXTM3U\n')
                 for uri in m3u_uris:
                     m3u_file.write('#EXTURL:%s\n' % uri)
-                    m3u_file.write('%s\n' % uri))
+                    m3u_file.write('%s\n' % uri)
 
         # process track deletions
         LOGGER.info(" ")
