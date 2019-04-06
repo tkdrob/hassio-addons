@@ -239,8 +239,9 @@ class PlaylistSyncer():
                 # also sync the other way around
                 self.sync_playlist(playlist["destination_provider"], playlist["destination_playlist"], playlist["source_provider"], playlist["source_playlist"], playlist["add_library"], allow_other_version)
             # look for duplicate tracks
-            self.find_duplicates_in_playlist(playlist["source_provider"], playlist["source_playlist"])
-            self.find_duplicates_in_playlist(playlist["destination_provider"], playlist["destination_playlist"])
+            if self.force_full_sync:
+                self.find_duplicates_in_playlist(playlist["source_provider"], playlist["source_playlist"])
+                self.find_duplicates_in_playlist(playlist["destination_provider"], playlist["destination_playlist"])
         #TODO: process wildcards
 
     def sync_playlist(self, source_provider, source_playlist, destination_provider, destination_playlist, add_library, allow_other_version, m3u_playlist=None):
