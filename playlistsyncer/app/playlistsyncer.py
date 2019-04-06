@@ -288,9 +288,11 @@ class PlaylistSyncer():
                         track_str2 = "%s - %s" % ("/".join(dest_match["artists"]), dest_match["title"])
                         LOGGER.warning("Matched with different version ! %s: %s - %s: %s" %(source_provider, track_str, destination_provider, track_str2))
                 if not dest_match:
-                    dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library, allow_other_version)
+                    add_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library, allow_other_version)
+                    if add_match:
+                        dest_tracks_count += 1
+                        dest_match = add_match
                 if dest_match:
-                    dest_tracks_count += 1
                     track["syncpartner_id"] = dest_match["id"]
                     m3u_entry = self.create_m3u_entry(dest_match['id'], track_str, destination_provider)
                     m3u_entries.append( m3u_entry )
