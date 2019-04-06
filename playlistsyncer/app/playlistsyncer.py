@@ -233,7 +233,7 @@ class PlaylistSyncer():
             if not playlist["destination_playlist"] or playlist["destination_playlist"] == "*":
                 playlist["destination_playlist"] = playlist["source_playlist"]
             m3u_playlist = playlist.get("m3u_playlist")
-            allow_other_version = playlist.get("allow_other_version", False)
+            allow_other_version = playlist.get("allow_other_version", True)
             self.sync_playlist(playlist["source_provider"], playlist["source_playlist"], playlist["destination_provider"], playlist["destination_playlist"], playlist["add_library"], allow_other_version, m3u_playlist)
             if playlist["two_way"]:
                 # also sync the other way around
