@@ -232,8 +232,8 @@ class PlaylistSyncer():
                 continue
             if not playlist["destination_playlist"] or playlist["destination_playlist"] == "*":
                 playlist["destination_playlist"] = playlist["source_playlist"]
-            create_m3u = playlist.get("create_m3u", False) and self.config.get("local_music_dir")
-            self.sync_playlist(playlist["source_provider"], playlist["source_playlist"], playlist["destination_provider"], playlist["destination_playlist"], playlist["add_library"], create_m3u)
+            m3u_playlist = playlist.get("create_m3u")
+            self.sync_playlist(playlist["source_provider"], playlist["source_playlist"], playlist["destination_provider"], playlist["destination_playlist"], playlist["add_library"], m3u_playlist)
             if playlist["two_way"]:
                 # also sync the other way around
                 self.sync_playlist(playlist["destination_provider"], playlist["destination_playlist"], playlist["source_provider"], playlist["source_playlist"], playlist["add_library"])
@@ -242,7 +242,7 @@ class PlaylistSyncer():
             self.find_duplicates_in_playlist(playlist["destination_provider"], playlist["destination_playlist"])
         #TODO: process wildcards
 
-    def sync_playlist(self, source_provider, source_playlist, destination_provider, destination_playlist, add_library, create_m3u=False):
+    def sync_playlist(self, source_provider, source_playlist, destination_provider, destination_playlist, add_library, m3u_playlist=None):
         ''' process all spotify playlists'''
         LOGGER.info(" ")
         LOGGER.info("### SYNCING %s/%s to %s/%s" % (source_provider, source_playlist, destination_provider, destination_playlist))
@@ -258,9 +258,12 @@ class PlaylistSyncer():
         
         for track in src_tracks:
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
+            m3u_uri = ""
             cache_match = self.find_match_in_tracks(track, tracks_cache)
             if cache_match and not self.force_full_sync:
                 LOGGER.debug("%s present in cache and will be ignored this run" % track_str)
+                track["syncpartner_id"] = cache_match["syncpartner_id"]
+                m3u_uri = track.get("m3u_uri","")
             else:
                 # this track is not in the cache from last run so it's added (or this is a full sync)
                 dest_match = self.find_match_in_tracks(track, dest_tracks, version_match=True)
@@ -274,23 +277,23 @@ class PlaylistSyncer():
                     dest_match = self.add_track_to_playlist(track, destination_provider, destination_playlist, add_library)
                 if dest_match:
                     track["syncpartner_id"] = dest_match["id"]
-                    m3u_uris.append("%s://track/%s" %(destination_provider, dest_match['id']))
+                    m3u_uri = "%s://track/%s" %(destination_provider, dest_match['id'])
                 else:
-                    if create_m3u:
-                        local_match = self.find_match_file(track, source_provider)
-                        if local_match:
-                            m3u_uris.append(local_match)
-                        else:
-                            m3u_uris.append("%s://track/%s" %(source_provider, track['id']))
-                    LOGGER.warning("Track %s could not be added to %s/%s" %(track_str, destination_provider, destination_playlist))
+                    local_match = self.find_match_file(track, source_provider)
+                    if local_match:
+                        m3u_uri = local_match
+                        LOGGER.warning("Track %s matched to local file: %s" %(track_str, local_match))
+                    else:
+                        m3u_uri = "%s://track/%s" %(source_provider, track['id'])
+                        LOGGER.warning("Track %s could not be added to %s/%s" %(track_str, destination_provider, destination_playlist))
+            track["m3u_uri"] = m3u_uri
+            m3u_uris.append(m3u_uri)
+
 
         # write m3u playlist
-        # todo: process deletions
-        if create_m3u and m3u_uris:
-            m3u_filename = os.path.join(self.config['local_music_dir'], '%s - %s.m3u' %(destination_playlist, source_provider))
-            with open(m3u_filename, 'a+') as m3u_file:
-                for line in m3u_uris:
-                    m3u_file.write(line + '\n')
+        if m3u_playlist:
+            with open(m3u_playlist, 'w') as m3u_file:
+                m3u_file.write('\n'.join(m3u_uris))
 
         # process track deletions
         LOGGER.info(" ")

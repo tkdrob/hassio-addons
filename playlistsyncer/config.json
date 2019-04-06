@@ -1,6 +1,6 @@
 {
   "name": "Playlistsyncer",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "Sync playlists",
   "slug": "playlist_syncer",
   "startup": "application",
@@ -52,7 +52,7 @@
         "destination_playlist": "str",
         "two_way": "bool",
         "add_library": "bool",
-        "create_m3u": "bool?"
+        "m3u_playlist": "str?"
       }
     ]
   }
