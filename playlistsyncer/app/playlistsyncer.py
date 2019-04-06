@@ -263,11 +263,11 @@ class PlaylistSyncer():
         for track in src_tracks:
             if destination_provider == 'QOBUZ':
                 # funky workaround for qobuz 1000 tracks limit
-                if dest_tracks_count > 3000:
+                if dest_tracks_count >= 3000:
                     destination_playlist = destination_playlist_org + "__3"
-                elif dest_tracks_count > 2000:
+                elif dest_tracks_count >= 2000:
                     destination_playlist = destination_playlist_org + "__2"
-                elif dest_tracks_count > 1000:
+                elif dest_tracks_count >= 1000:
                     destination_playlist = destination_playlist_org + "__1"
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
             cache_match = self.find_match_in_tracks(track, tracks_cache)
@@ -325,8 +325,8 @@ class PlaylistSyncer():
             if not self.find_match_in_tracks(track, src_tracks, version_match=True):
                 LOGGER.debug("%s is removed from %s/%s" % (track_str, source_provider, source_playlist))
                 if track.get("syncpartner_id"): 
-                    LOGGER.warning("%s will be removed from %s/%s" % (track_str, destination_provider, destination_playlist))
-                    self.remove_track_from_playlist(destination_provider, destination_playlist, track["syncpartner_id"])
+                    LOGGER.warning("%s will be removed from %s/%s" % (track_str, destination_provider, destination_playlist_org))
+                    self.remove_track_from_playlist(destination_provider, destination_playlist_org, track["syncpartner_id"])
         # save cache
         self.cache[cache_key] = src_tracks
         self.write_cache()
@@ -339,7 +339,6 @@ class PlaylistSyncer():
             qobuz_playlist = self.qobuz.get_playlist(playlist_name)
             for track in self.get_qobuz_playlist_tracks(playlist_name):
                 if track["id"] == track_id:
-                    LOGGER.info(track)
                     self.qobuz.remove_playlist_tracks(qobuz_playlist["id"], track["playlist_track_id"])
         elif provider == "SPOTIFY":
             spotify_playlist = self.get_spotify_playlist(playlist_name)
@@ -916,6 +915,8 @@ class PlaylistSyncer():
                 item["version"] = track["version"]
             else:
                 item["version"] = self.parse_track_version(item["title"], item["album"])
+            if 'playlist_track_id' in track:
+                result['playlist_track_id'] = track['playlist_track_id']
             result.append(item)
         return result
 
