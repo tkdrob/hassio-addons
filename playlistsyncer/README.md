@@ -5,7 +5,6 @@
 This addon/docker image will allow you to sync playlists between several streaming services.
 I created this as a personal project but this might come in handy for others too.
 Supported streaming services: Spotify, Tidal and Qobuz
-Special: Also supports Roon (www.roonlabs.com) media software for syncing playlists.
 
 ## Installation
 
@@ -41,10 +40,7 @@ Example add-on configuration:
   "tidal_password": "mytidalpasswd",
   "qobuz_username": "myqobuzusername",
   "qobuz_password": "myqobuzpasswd",
-  "roon_server": "192.168.1.1",
-  "roon_syncpartner": "QOBUZ",
-  "roon_syncpartner_prefix": "zzz_sync_",
-  "roon_music_dir": "/share/music",
+  "local_music_dir": "/share/music",
   "playlists": [
     {
       "source_provider": "SPOTIFY",
@@ -130,26 +126,11 @@ Your Qobuz username if you have a Qobuz account and you want to sync Qobuz playl
 [OPTIONAL]
 Your Qobuz password if you have a Qobuz account and you want to sync Qobuz playlists with this addon.
 
-### Option: `roon_server`
+### Option: `local_music_dir`
 
 [OPTIONAL]
-The hostname/ipaddress of your Roon (www.roonlabs.com) server if you have a Roon server running and you want to sync Roon playlists with this addon.
-
-### Option: `roon_syncpartner`
-
-[OPTIONAL] - only used when you're using sync (option roon_server)
-Roon does not have an api by itself to add tracks to Roon created playlists so tracks will be added to a temporary (prefixed) playlist on a cloudservice which is connected to Roon. Valid options: TIDAL or QOBUZ
-
-### Option: `roon_syncpartner_prefix`
-
-[OPTIONAL] - only used when you're using sync (option roon_server)
-The prefix used when we're syncing tracks to a temp playlist
-
-### Option: `roon_music_dir`
-
-[OPTIONAL] - only used when you're using sync (option roon_server)
 When syncing, look in the music dir if the song is found on disk
-Sdvanced feature can be ommitted completely.
+Advanced feature can be ommitted completely.
 
 ### Option: `playlists`
 
