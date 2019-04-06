@@ -337,6 +337,7 @@ class PlaylistSyncer():
             qobuz_playlist = self.qobuz.get_playlist(playlist_name)
             for track in self.get_qobuz_playlist_tracks(playlist_name):
                 if track["id"] == track_id:
+                    LOGGER.info(track)
                     self.qobuz.remove_playlist_tracks(qobuz_playlist["id"], track["playlist_track_id"])
         elif provider == "SPOTIFY":
             spotify_playlist = self.get_spotify_playlist(playlist_name)
