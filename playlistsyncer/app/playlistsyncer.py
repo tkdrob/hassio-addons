@@ -950,7 +950,7 @@ class PlaylistSyncer():
         m3u_entry = '#EXTURL:%s\n' % uri
         m3u_entry += '#EXTINF:-1,%s\n' % uri
         m3u_entry += '%s\n' % uri
-        return uri
+        return m3u_entry
 
     @staticmethod
     def get_spotty_binary():
