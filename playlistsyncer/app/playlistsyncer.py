@@ -291,7 +291,7 @@ class PlaylistSyncer():
 
         # write m3u playlist
         if m3u_playlist:
-            with open(m3u_playlist, 'w') as m3u_file:
+            with open(m3u_playlist, 'w+') as m3u_file:
                 m3u_file.write('\n'.join(m3u_uris))
 
         # process track deletions
