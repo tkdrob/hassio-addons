@@ -257,17 +257,18 @@ class PlaylistSyncer():
         tracks_cache = self.cache.get(cache_key,[])
         dest_tracks = self.get_playlist_tracks(destination_provider, destination_playlist)
         m3u_entries = []
+        destination_playlist_org = destination_playlist
         dest_tracks_count = len(dest_tracks) # funky workaround for qobuz 1000 tracks limit
         
         for track in src_tracks:
             if destination_provider == 'QOBUZ':
                 # funky workaround for qobuz 1000 tracks limit
                 if dest_tracks_count > 3000:
-                    destination_playlist = destination_playlist + "__3"
+                    destination_playlist = destination_playlist_org + "__3"
                 elif dest_tracks_count > 2000:
-                    destination_playlist = destination_playlist + "__2"
+                    destination_playlist = destination_playlist_org + "__2"
                 elif dest_tracks_count > 1000:
-                    destination_playlist = destination_playlist + "__1"
+                    destination_playlist = destination_playlist_org + "__1"
             track_str = "%s - %s" %("/".join(track["artists"]), track["title"])
             cache_match = self.find_match_in_tracks(track, tracks_cache)
             if cache_match and not self.force_full_sync and 'm3u_entry' in cache_match:

@@ -1,6 +1,6 @@
 {
   "name": "Playlistsyncer",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "description": "Sync playlists",
   "slug": "playlist_syncer",
   "startup": "application",
