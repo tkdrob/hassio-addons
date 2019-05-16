@@ -1,0 +1,18 @@
+{
+  "name": "Music Assistant",
+  "version": "0.0.9",
+  "description": "Media library manager for (streaming) media",
+  "url": "https://github.com/marcelveldt/musicassistant",
+  "slug": "music_assistant",
+  "startup": "application",
+  "boot": "auto",
+  "arch": ["amd64"],
+  "map": ["share:rw","ssl"],
+  "webui": "http://[HOST]:[PORT:8095]",
+  "host_network": true,
+  "image": "marcelveldt/musicassistant",
+  "options": {
+  },
+  "schema": {
+  }
+}
