@@ -1,6 +1,6 @@
 {
   "name": "Music Assistant",
-  "version": "1.0.1",
+  "version": "0.0.4",
   "description": "Media library manager for (streaming) media",
   "url": "https://github.com/marcelveldt/musicassistant",
   "slug": "music_assistant",
