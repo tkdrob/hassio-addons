@@ -6,7 +6,7 @@
   "slug": "music_assistant",
   "startup": "application",
   "boot": "auto",
-  "arch": ["amd64", "armhf", "armv7" ],
+  "arch": ["amd64" ],
   "map": ["share:rw","ssl","config:rw"],
   "webui": "http://[HOST]:[PORT:8095]",
   "tmpfs": "size=512m",
