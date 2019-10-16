@@ -1,21 +1,26 @@
 {
   "name": "Music Assistant",
-  "version": "0.0.3",
+  "version": "1.0.1",
   "description": "Media library manager for (streaming) media",
   "url": "https://github.com/marcelveldt/musicassistant",
   "slug": "music_assistant",
   "startup": "application",
   "boot": "auto",
-  "arch": ["amd64"],
-  "map": ["share:rw","ssl"],
+  "arch": ["amd64", "armhf", "armv7" ],
+  "map": ["share:rw","ssl","config:rw"],
   "webui": "http://[HOST]:[PORT:8095]",
+  "tmpfs": "size=512m",
   "host_network": true,
+  "environment": {},
   "image": "marcelveldt/musicassistant",
-  "environment": {
-    "autoupdate": "true"
-  },
   "options": {
+    "debug_messages": false,
+    "data_dir": "/config/mass_data",
+    "auto_update": false
   },
   "schema": {
+    "debug_messages": "bool",
+    "data_dir": "str",
+    "auto_update": "bool"
   }
 }
