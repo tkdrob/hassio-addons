@@ -16,7 +16,8 @@
   "homeassistant_api": true,
   "ingress": true,
   "ingress_port": 0,
-  "ingress_entry": "musicassistant",
+  "hassio_api": true,
+  "hassio_role": "manager",
   "options": {
     "debug_messages": false,
     "data_dir": "/config/mass_data",
@@ -26,13 +27,5 @@
     "debug_messages": "bool",
     "data_dir": "str",
     "use_nightly": "bool"
-  },
-  "ports": {
-    "8095": 8095,
-    "8096": 8096
-  },
-  "ports_description": {
-    "8095": "HTTP port",
-    "8096": "HTTPS port"
   }
 }
