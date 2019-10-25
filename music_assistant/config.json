@@ -15,9 +15,7 @@
   "image": "marcelveldt/musicassistant",
   "homeassistant_api": true,
   "ingress": true,
-  "ingress_port": 0,
-  "hassio_api": true,
-  "hassio_role": "manager",
+  "ingress_port": 8095,
   "options": {
     "debug_messages": false,
     "data_dir": "/config/mass_data",
