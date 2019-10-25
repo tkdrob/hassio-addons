@@ -9,13 +9,13 @@
   "arch": ["amd64" ],
   "map": ["share:rw","ssl","config:rw"],
   "webui": "http://[HOST]:[PORT:8095]",
-  "tmpfs": "size=512m",
+  "tmpfs": "size=64m",
   "host_network": true,
   "environment": {},
   "image": "marcelveldt/musicassistant",
   "homeassistant_api": true,
   "ingress": true,
-  "ingress_port": 8095,
+  "ingress_port": 0,
   "ingress_entry": "musicassistant",
   "options": {
     "debug_messages": false,
@@ -26,5 +26,13 @@
     "debug_messages": "bool",
     "data_dir": "str",
     "use_nightly": "bool"
+  },
+  "ports": {
+    "8095": 8095,
+    "8096": 8096
+  },
+  "ports_description": {
+    "8095": "HTTP port",
+    "8096": "HTTPS port"
   }
 }
