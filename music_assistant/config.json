@@ -16,6 +16,7 @@
   "homeassistant_api": true,
   "ingress": true,
   "ingress_port": 0,
+  "panel_icon": "mdi:library_music",
   "options": {
     "debug_messages": false,
     "data_dir": "/config/mass_data",
