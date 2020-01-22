@@ -27,9 +27,9 @@ comparison to installing any other Hass.io add-on.
 Some manual configuration is still needed at the moment.
 It is required that you have MQTT setup in HomeAssistant! Hassio includes a Mosquitto MQTT broker addon.
 
-### Option: `broadcast_cmd`
+### Option: `zwave_device`
 
-Path to your Z-wave stick/device. Default to //dev/ttyACM0
+Path to your Z-wave stick/device. Default to /dev/ttyACM0
 
 ### Option: `zwave_network_key`
 
