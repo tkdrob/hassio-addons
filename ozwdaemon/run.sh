@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 CONFIG_PATH=/data/options.json
 
@@ -13,16 +13,11 @@ function file_exists () {
 
 # Migrate existing/previous data from hass config folder
 if [[ $(file_exists "/data/ozwcache_*"; echo $?) -eq 0 ]]; then
-    # try new style ozw_cache file first, fallback to old style zwcfg
     if [[ $(file_exists "/config/ozwcache_*"; echo $?) -eq 1 ]]; then
         echo "[INFO] Migrating existing ozw_cache*.xml from /config"
         cp /config/ozwcache_* /data
-    elif [[ $(file_exists "/config/zwcfg_*"; echo $?) -eq 1 ]]; then
-        echo "[INFO] Migrating existing zwcfg_*.xml from /config"
-        cp /config/zwcfg_* /data
     fi
 fi
-# Also migrate options.xml if exists
 if [ ! -f "/data/options.xml" ]; then
     if [ -f "/config/options.xml" ]; then
         echo "[INFO] Migrating existing options.xml from /config"
@@ -60,8 +55,8 @@ if MQTT_CONFIG="$(curl -s -f -H "X-Hassio-Key: ${HASSIO_TOKEN}" http://hassio/se
       ) >> /etc/mosquitto.conf
     fi
 
-    # OpenZwave daemon only supports unauthenticated MQTT so we relay messages.
-    # Besides: this adds some stability too as OZW seems to crash if the MQTT server gets unreachable.
+    # TEMP: OpenZwave daemon only supports unauthenticated MQTT so we relay messages with an mqtt bridge.
+    # This will be fixed soon in the ozwdaemon.
     (
         echo "topic OpenZWave/${OZW_INSTANCE}/# out"
         echo "topic # IN OpenZWave/${OZW_INSTANCE}/"
@@ -70,10 +65,12 @@ else
     echo "[ERROR] No Hass.io mqtt service found!"
 fi
 
-echo "[INFO] Start internal mqtt broker"
-mosquitto -c /etc/mosquitto.conf &
+# echo "[INFO] Start internal mqtt broker"
+# mosquitto -c /etc/mosquitto.conf &
 
-echo "[INFO] Starting OZW Daemon"
-cd /data
+# echo "[INFO] Starting OZW Daemon"
+# cd /data
 
-/usr/local/bin/ozwdaemon -s $ZWAVE_DEVICE -c /data -u /data --mqtt-server localhost --mqtt-port 1883 --stop-on-failure --mqtt-instance $OZW_INSTANCE
+# /usr/local/bin/ozwdaemon -s $ZWAVE_DEVICE -c /data -u /data --mqtt-server localhost --mqtt-port 1883 --stop-on-failure --mqtt-instance $OZW_INSTANCE
+
+exec supervisord -c /etc/supervisor/conf.d/supervisord.conf
