@@ -18,10 +18,6 @@ https://github.com/marcelveldt/hassio-addons-repo
 
 ## Add-ons provided by this repository
 
-### &#10003; [Hassio Auto Backup][addon-autobackup]
-
-Automatically create/schedule snapshots of your hassio instance with some advanced finetuning and optional automatic upload to the cloud.
-
 
 ### &#10003; [Google Assistant Webserver][addon-google-assistant-webserver]
 
