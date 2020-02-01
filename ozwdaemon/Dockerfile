@@ -23,7 +23,6 @@ COPY run.sh /
 COPY mosquitto.conf /etc/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ozw-admin.conf /root/.config/OpenZWave/ozw-admin.conf
-COPY nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /data/
 
