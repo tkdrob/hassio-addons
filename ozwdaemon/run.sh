@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 CONFIG_PATH=/data/options.json
 
@@ -72,5 +72,6 @@ fi
 # cd /data
 
 # /usr/local/bin/ozwdaemon -s $ZWAVE_DEVICE -c /data -u /data --mqtt-server localhost --mqtt-port 1883 --stop-on-failure --mqtt-instance $OZW_INSTANCE
-
+export ENV_OZW_INSTANCE=$OZW_INSTANCE
+export ENV_ZWAVE_DEVICE=$ZWAVE_DEVICE
 exec supervisord -c /etc/supervisor/conf.d/supervisord.conf

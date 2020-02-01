@@ -6,6 +6,10 @@ FROM openzwave/ozwdaemon:latest
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         mosquitto curl jq \
+        bash \
+        fluxbox \
+        git \
+        net-tools \
         novnc \
         supervisor \
         x11vnc \
@@ -13,7 +17,8 @@ RUN apt-get update \
 
 # Download OZW-Admin Control panel
 RUN curl -o /tmp/ozwadmin http://bamboo.my-ho.st/bamboo/browse/OZW-OZW0-26/artifact/JOB1/Linux---AppImage/OZWAdmin-0.1-x86_64.AppImage && \
-    chmod a+x /tmp/ozwadmin
+    chmod a+x /tmp/ozwadmin && \
+    cp /usr/share/novnc/vnc_auto.html /usr/share/novnc/index.html
 
 # Copy data
 COPY run.sh /
