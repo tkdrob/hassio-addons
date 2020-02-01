@@ -11,8 +11,7 @@ RUN apt-get update \
         novnc \
         supervisor \
         x11vnc \
-        xvfb \
-        nginx
+        xvfb
 
 # Download OZW-Admin Control panel
 RUN curl -o /tmp/ozwadmin http://bamboo.my-ho.st/bamboo/browse/OZW-OZW0-26/artifact/JOB1/Linux---AppImage/OZWAdmin-0.1-x86_64.AppImage && \
@@ -41,4 +40,4 @@ ENV HOME=/data \
 
 ENTRYPOINT [ "/run.sh" ]
 
-EXPOSE 8080
+EXPOSE 8090

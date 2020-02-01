@@ -1,6 +1,6 @@
 {
   "name": "Open Z-Wave Daemon",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "A Docker Container for running the OpenZWave MQTT Adapter (for Home Assistant via the new Z-Wave Integration at https://github.com/cgarwood/python-openzwave-mqtt",
   "url": "https://github.com/cgarwood/homeassistant-zwave_mqtt",
   "slug": "ozwdaemon",
@@ -11,8 +11,7 @@
   "services": ["mqtt:need"],
   "auto_uart": true,
   "homeassistant_api": true,
-  "ingress": true,
-  "ingress_port": 8080,
+  "webui": "http://[HOST]:[PORT:8090]",
   "ports": {
     "8090/tcp": 8090
   },
