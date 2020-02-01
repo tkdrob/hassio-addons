@@ -13,6 +13,9 @@
   "homeassistant_api": true,
   "ingress": true,
   "ingress_port": 8080,
+  "ports": {
+    "8090/tcp": 8090
+  },
   "options": {
     "zwave_device": "/dev/ttyACM0",
     "zwave_network_key": "",

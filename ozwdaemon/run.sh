@@ -63,15 +63,9 @@ if MQTT_CONFIG="$(curl -s -f -H "X-Hassio-Key: ${HASSIO_TOKEN}" http://hassio/se
     ) >> /etc/mosquitto.conf
 else
     echo "[ERROR] No Hass.io mqtt service found!"
+    exit 1
 fi
 
-# echo "[INFO] Start internal mqtt broker"
-# mosquitto -c /etc/mosquitto.conf &
-
-# echo "[INFO] Starting OZW Daemon"
-# cd /data
-
-# /usr/local/bin/ozwdaemon -s $ZWAVE_DEVICE -c /data -u /data --mqtt-server localhost --mqtt-port 1883 --stop-on-failure --mqtt-instance $OZW_INSTANCE
 export OZW_INSTANCE=$OZW_INSTANCE
 export ZWAVE_DEVICE=$ZWAVE_DEVICE
 exec supervisord -c /etc/supervisor/conf.d/supervisord.conf

@@ -7,13 +7,12 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         mosquitto curl jq \
         bash \
-        fluxbox \
-        git \
         net-tools \
         novnc \
         supervisor \
         x11vnc \
-        xvfb
+        xvfb \
+        nginx
 
 # Download OZW-Admin Control panel
 RUN curl -o /tmp/ozwadmin http://bamboo.my-ho.st/bamboo/browse/OZW-OZW0-26/artifact/JOB1/Linux---AppImage/OZWAdmin-0.1-x86_64.AppImage && \
@@ -25,6 +24,7 @@ COPY run.sh /
 COPY mosquitto.conf /etc/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ozw-admin.conf /root/.config/OpenZWave/ozw-admin.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /data/
 
