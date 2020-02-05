@@ -11,7 +11,9 @@
   "services": ["mqtt:need"],
   "auto_uart": true,
   "homeassistant_api": true,
-  "ports": { },
+  "ports": {
+    "1983/tcp": 1983
+  },
   "options": {
     "zwave_device": "/dev/ttyACM0",
     "zwave_network_key": "",
