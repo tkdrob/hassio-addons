@@ -17,7 +17,8 @@ RUN \
     && pip3 install \
         --no-cache-dir \
         -r hass_emulated_hue/requirements.txt \
-    && cp hass_emulated_hue/emulated_hue /usr/local/app/emulated_hue \
+    && mkdir /usr/local/app \
+    && cp -R hass_emulated_hue/emulated_hue /usr/local/app/ \
     && cp hass_emulated_hue/run.py /usr/local/app/run.py \
     && apk del --no-cache --purge .build-dependencies \
     && find /usr/local \
