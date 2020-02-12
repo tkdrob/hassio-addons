@@ -7,7 +7,7 @@
   "stage": "experimental",
   "startup": "application",
   "boot": "auto",
-  "arch": ["amd64"],
+  "arch": ["amd64", "i386", "armhf", "armv7", "aarch64"],
   "map": [],
   "webui": "http://[HOST]",
   "host_network": true,
