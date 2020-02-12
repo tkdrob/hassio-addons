@@ -1,0 +1,20 @@
+{
+  "name": "Emulated HUE",
+  "version": "0.0.1",
+  "description": "HUE Emulation for Home Assistant",
+  "url": "https://github.com/marcelveldt/hass_emulated_hue",
+  "slug": "emulated_hue",
+  "stage": "experimental",
+  "startup": "application",
+  "boot": "auto",
+  "arch": ["amd64"],
+  "map": [],
+  "webui": "http://[HOST]",
+  "host_network": true,
+  "environment": {},
+  "homeassistant_api": true,
+  "options": {
+  },
+  "schema": {
+  }
+}
