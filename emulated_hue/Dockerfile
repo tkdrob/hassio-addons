@@ -13,11 +13,11 @@ RUN \
         python3 \
         openssl \
         supervisor \
+    && mkdir /usr/local/app \
     && git clone https://github.com/marcelveldt/hass_emulated_hue.git \
     && pip3 install \
         --no-cache-dir \
         -r hass_emulated_hue/requirements.txt \
-    && mkdir /usr/local/app \
     && cp -R hass_emulated_hue/emulated_hue /usr/local/app/ \
     && cp hass_emulated_hue/run.py /usr/local/app/run.py \
     && apk del --no-cache --purge .build-dependencies \
