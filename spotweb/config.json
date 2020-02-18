@@ -1,15 +1,12 @@
 {
   "name": "Spotweb",
-  "version": "latest",
+  "version": "225",
   "slug": "spotweb_docker",
   "description": "Spotweb add-on based on erikdevries/spotweb",
   "startup": "services",
   "boot": "auto",
   "arch": [
-    "aarch64",
-    "amd64",
-    "armhf",
-    "i386"
+    "amd64"
   ],
   "ports": {
     "80/tcp": 81
@@ -17,7 +14,7 @@
   "map": ["share:rw"],
   "webui": "http://[HOST]:[PORT:81]",
   "environment": {
-    "DB_HOST": "172.30.32.1",
+    "DB_HOST": "core-mariadb",
     "DB_PORT": "3306",
     "DB_NAME": "spotweb",
     "DB_USER": "spotweb",
