@@ -1,6 +1,6 @@
 {
   "name": "Open Z-Wave Daemon",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "A Docker Container for running the OpenZWave MQTT Adapter (for Home Assistant via the new Z-Wave Integration at https://github.com/cgarwood/python-openzwave-mqtt",
   "url": "https://github.com/cgarwood/homeassistant-zwave_mqtt",
   "slug": "ozwdaemon",
