@@ -1,0 +1,18 @@
+{
+  "name": "Appla Filing Protocol (netatalk)",
+  "version": "0.0.1",
+  "description": "Serve the supervisor's shares as AFP.",
+  "url": "",
+  "slug": "netatalk",
+  "stage": "experimental",
+  "startup": "application",
+  "boot": "auto",
+  "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "host_network": true,
+  "environment": {},
+  "map": ["config:rw", "ssl:rw", "addons:rw", "share:rw", "backup:rw"],
+  "options": {
+  },
+  "schema": {
+  }
+}
