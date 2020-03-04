@@ -1,5 +1,11 @@
 #!/bin/bash
 
+CONFIG_PATH=/data/options.json
+AFP_USER=$(jq --raw-output ".afp_username" $CONFIG_PATH)
+AFP_PASSWORD=$(jq --raw-output ".afp_password" $CONFIG_PATH)
+AFP_UID=0
+AFP_GID=0
+
 if [ ! -z "${AFP_USER}" ]; then
     if [ ! -z "${AFP_UID}" ]; then
         cmd="$cmd --uid ${AFP_UID}"
@@ -40,20 +46,5 @@ time machine = yes' >> /etc/afp.conf
 
 # TODO: configure username/password
 sed -i'' -e "s,%AFP_USER%,${AFP_USER:-},g" /etc/afp.conf
-# configure listen ip
-# DOCKER_HOST=`/sbin/ip route|awk '/default/ { print $3 }'`
-# sed -i'' -e "s,%HOST_IP%,${DOCKER_HOST:-},g" /etc/afp.conf
-
-mkdir -p /var/run/dbus
-rm -f /var/run/dbus/pid
-dbus-daemon --system
-
-rm -f /var/run/avahi-daemon/pid
-sed -i '/rlimit-nproc/d' /etc/avahi/avahi-daemon.conf
-sed -i'' -e "s,#enable-dbus,enable-dbus,g" /etc/avahi/avahi-daemon.conf
-avahi-daemon -D
-
-# remove any previous lockfile that wasn't cleaned up
-rm -f /var/run/lock/netatalk
 
 exec netatalk -F /etc/afp.conf -d
