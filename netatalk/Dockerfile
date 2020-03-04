@@ -8,6 +8,5 @@ RUN apk add netatalk avahi
 
 # copy files
 COPY entrypoint.sh /entrypoint.sh
-COPY afp.conf /etc/afp.conf
 
 CMD ["/entrypoint.sh"]
