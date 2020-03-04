@@ -18,7 +18,7 @@ fi
 echo $'[Global] \n\
 log file = /dev/stdout \n\
 uam list = uams_guest.so uams_dhx2.so uams_dhx.so \n\
-afp listen = %HOST_IP%
+hostname = homeassistant.local \n\
 [Share] \n\
 path = /share \n\
 valid users = %AFP_USER% \n\
@@ -41,8 +41,8 @@ time machine = yes' >> /etc/afp.conf
 # TODO: configure username/password
 sed -i'' -e "s,%AFP_USER%,${AFP_USER:-},g" /etc/afp.conf
 # configure listen ip
-DOCKER_HOST=`/sbin/ip route|awk '/default/ { print $3 }'`
-sed -i'' -e "s,%HOST_IP%,${DOCKER_HOST:-},g" /etc/afp.conf
+# DOCKER_HOST=`/sbin/ip route|awk '/default/ { print $3 }'`
+# sed -i'' -e "s,%HOST_IP%,${DOCKER_HOST:-},g" /etc/afp.conf
 
 mkdir -p /var/run/dbus
 rm -f /var/run/dbus/pid
