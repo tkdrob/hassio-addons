@@ -18,6 +18,7 @@ fi
 echo $'[Global]
 log file = /dev/stdout
 uam list = uams_guest.so uams_dhx2.so uams_dhx.so
+hostname = homeassistant.local
 [Share]
 path = /share
 valid users = %AFP_USER%
