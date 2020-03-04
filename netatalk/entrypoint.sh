@@ -1,13 +1,12 @@
 #!/bin/bash
 
 CONFIG_PATH=/data/options.json
-AFP_USER=$(jq --raw-output ".afp_username" $CONFIG_PATH)
-AFP_PASSWORD=$(jq --raw-output ".afp_password" $CONFIG_PATH)
-AFP_GROUP="root"
+USERNAME=$(jq --raw-output ".afp_username" $CONFIG_PATH)
+PASSWORD=$(jq --raw-output ".afp_password" $CONFIG_PATH)
 
 addgroup "${USERNAME}"
 adduser -D -H -G "${USERNAME}" -s /bin/false "${USERNAME}"
-echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
+echo "${USERNAME}:${PASSWORD}" | chpasswd
 
 
 # create config
