@@ -18,7 +18,7 @@ fi
 echo $'[Global] \n\
 log file = /dev/stdout \n\
 uam list = uams_guest.so uams_dhx2.so uams_dhx.so \n\
-hostname = homeassistant.local \n\
+afp listen = 192.168.1.1 \n\
 [Share] \n\
 path = /share \n\
 valid users = %AFP_USER% \n\
