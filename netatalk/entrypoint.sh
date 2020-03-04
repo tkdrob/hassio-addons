@@ -15,28 +15,44 @@ if [ ! -z "${AFP_USER}" ]; then
 fi
 
 # create config
-echo $'[Global] \n\
-log file = /dev/stdout \n\
-uam list = uams_guest.so uams_dhx2.so uams_dhx.so \n\
-afp listen = 192.168.1.1 \n\
-[Share] \n\
-path = /share \n\
-valid users = %AFP_USER% \n\
-[Addons] \n\
-path = /addons \n\
-valid users = %AFP_USER% \n\
-[SSL] \n\
-path = /ssl \n\
-valid users = %AFP_USER% \n\
-[Configuration] \n\
-path = /config \n\
-valid users = %AFP_USER% \n\
-[Backup] \n\
-path = /backup \n\
-valid users = %AFP_USER% \n\
-[Time Machine] \n\
-path = /backup/timemachine \n\
+echo $'[Global]
+log file = /dev/stdout
+uam list = uams_guest.so uams_dhx2.so uams_dhx.so
+hostname = homeassistant.local
+[Share]
+path = /share
+valid users = %AFP_USER%
+[Addons]
+path = /addons
+valid users = %AFP_USER%
+[SSL]
+path = /ssl
+valid users = %AFP_USER%
+[Configuration]
+path = /config
+valid users = %AFP_USER%
+[Backup]
+path = /backup
+valid users = %AFP_USER%
+[Time Machine]
+path = /backup/timemachine
 time machine = yes' >> /etc/afp.conf
+
+
+echo $'<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+ <name replace-wildcards="yes">%h</name>
+ <service>
+  <type>_afpovertcp._tcp</type>
+  <port>548</port>
+ </service>
+ <service>
+  <type>_device-info._tcp</type>
+  <port>0</port>
+  <txt-record>model=AirPort</txt-record>
+ </service>
+</service-group>' >> /etc/avahi/services/afpd.service
 
 # TODO: configure username/password
 sed -i'' -e "s,%AFP_USER%,${AFP_USER:-},g" /etc/afp.conf
