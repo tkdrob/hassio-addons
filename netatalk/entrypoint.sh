@@ -3,14 +3,10 @@
 CONFIG_PATH=/data/options.json
 AFP_USER=$(jq --raw-output ".afp_username" $CONFIG_PATH)
 AFP_PASSWORD=$(jq --raw-output ".afp_password" $CONFIG_PATH)
-AFP_UID=0
-AFP_GID=0
+AFP_GROUP="root"
 
 if [ ! -z "${AFP_USER}" ]; then
-    if [ ! -z "${AFP_UID}" ]; then
-        cmd="$cmd -u ${AFP_UID}"
-    fi
-    adduser $cmd -H -D -g '' "${AFP_USER}"
+    adduser -H -D -g '' -G "${AFP_GROUP}" "${AFP_USER}"
     if [ ! -z "${AFP_PASSWORD}" ]; then
         echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
     fi
