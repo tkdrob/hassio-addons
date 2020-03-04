@@ -14,29 +14,35 @@ if [ ! -z "${AFP_USER}" ]; then
     fi
 fi
 
-# sed -i'' -e "s,%USER%,${AFP_USER:-},g" /etc/afp.conf
-
 # create config
 echo $'[Global] \n\
 log file = /dev/stdout \n\
 uam list = uams_guest.so uams_dhx2.so uams_dhx.so \n\
+afp listen = %HOST_IP%
 [Share] \n\
 path = /share \n\
-valid users = $AFP_USER \n\
+valid users = %AFP_USER% \n\
 [Addons] \n\
 path = /addons \n\
-valid users = $AFP_USER \n\
+valid users = %AFP_USER% \n\
 [SSL] \n\
 path = /ssl \n\
+valid users = %AFP_USER% \n\
 [Configuration] \n\
 path = /config \n\
-valid users = $AFP_USER \n\
+valid users = %AFP_USER% \n\
 [Backup] \n\
 path = /backup \n\
-valid users = $AFP_USER \n\
+valid users = %AFP_USER% \n\
 [Time Machine] \n\
 path = /backup/timemachine \n\
 time machine = yes' >> /etc/afp.conf
+
+# TODO: configure username/password
+sed -i'' -e "s,%AFP_USER%,${AFP_USER:-},g" /etc/afp.conf
+# configure listen ip
+DOCKER_HOST = ${"/sbin/ip route|awk '/default/ { print $3 }'"}
+sed -i'' -e "s,%HOST_IP%,${DOCKER_HOST:-},g" /etc/afp.conf
 
 mkdir -p /var/run/dbus
 rm -f /var/run/dbus/pid
