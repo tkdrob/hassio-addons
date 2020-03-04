@@ -41,7 +41,7 @@ time machine = yes' >> /etc/afp.conf
 # TODO: configure username/password
 sed -i'' -e "s,%AFP_USER%,${AFP_USER:-},g" /etc/afp.conf
 # configure listen ip
-DOCKER_HOST = ${"/sbin/ip route|awk '/default/ { print $3 }'"}
+DOCKER_HOST=`/sbin/ip route|awk '/default/ { print $3 }'`
 sed -i'' -e "s,%HOST_IP%,${DOCKER_HOST:-},g" /etc/afp.conf
 
 mkdir -p /var/run/dbus
