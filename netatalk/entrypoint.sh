@@ -17,7 +17,7 @@ fi
 # sed -i'' -e "s,%USER%,${AFP_USER:-},g" /etc/afp.conf
 
 # create config
-RUN echo $'[Global] \n\
+echo $'[Global] \n\
 log file = /dev/stdout \n\
 uam list = uams_guest.so uams_dhx2.so uams_dhx.so \n\
 [Share] \n\

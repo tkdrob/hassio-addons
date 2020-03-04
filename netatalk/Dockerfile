@@ -4,7 +4,7 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 
 # install packages
-RUN apk add netatalk avahi
+RUN apk add netatalk avahi dbus
 
 # copy files
 COPY entrypoint.sh /entrypoint.sh
