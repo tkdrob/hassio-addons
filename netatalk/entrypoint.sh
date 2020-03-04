@@ -5,18 +5,18 @@ AFP_USER=$(jq --raw-output ".afp_username" $CONFIG_PATH)
 AFP_PASSWORD=$(jq --raw-output ".afp_password" $CONFIG_PATH)
 AFP_GROUP="root"
 
-if [ ! -z "${AFP_USER}" ]; then
-    adduser -H -D -g '' -G "${AFP_GROUP}" "${AFP_USER}"
-    if [ ! -z "${AFP_PASSWORD}" ]; then
-        echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
-    fi
-fi
+addgroup "${USERNAME}"
+adduser -D -H -G "${USERNAME}" -s /bin/false "${USERNAME}"
+echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
+
 
 # create config
 echo $'[Global]
 log file = /dev/stdout
 uam list = uams_guest.so uams_dhx2.so uams_dhx.so
 hostname = homeassistant.local
+force user = root
+force group = root
 [Share]
 path = /share
 valid users = %AFP_USER%
