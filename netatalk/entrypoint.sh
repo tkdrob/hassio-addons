@@ -18,7 +18,6 @@ fi
 echo $'[Global]
 log file = /dev/stdout
 uam list = uams_guest.so uams_dhx2.so uams_dhx.so
-hostname = homeassistant.local
 [Share]
 path = /share
 valid users = %AFP_USER%
@@ -38,22 +37,6 @@ valid users = %AFP_USER%
 path = /backup/timemachine
 time machine = yes' >> /etc/afp.conf
 
-
-echo $'<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
-<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-<service-group>
- <name replace-wildcards="yes">%h</name>
- <service>
-  <type>_afpovertcp._tcp</type>
-  <port>548</port>
- </service>
- <service>
-  <type>_device-info._tcp</type>
-  <port>0</port>
-  <txt-record>model=AirPort</txt-record>
- </service>
-</service-group>' >> /etc/avahi/services/afpd.service
-
 # TODO: configure username/password
 sed -i'' -e "s,%AFP_USER%,${AFP_USER:-},g" /etc/afp.conf
 # configure listen ip
@@ -66,6 +49,7 @@ dbus-daemon --system
 
 rm -f /var/run/avahi-daemon/pid
 sed -i '/rlimit-nproc/d' /etc/avahi/avahi-daemon.conf
+sed -i'' -e "s,#enable-dbus,enable-dbus,g" /etc/avahi/avahi-daemon.conf
 avahi-daemon -D
 
 # remove any previous lockfile that wasn't cleaned up
