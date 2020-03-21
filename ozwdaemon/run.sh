@@ -43,24 +43,6 @@ if MQTT_CONFIG="$(curl -s -f -H "X-Hassio-Key: ${HASSIO_TOKEN}" http://hassio/se
 
     echo "[INFO] Setup Hass.io mqtt service to ${HOST}"
 
-    (
-        echo "connection main-mqtt"
-        echo "address ${HOST}:${PORT}"
-    ) >> /etc/mosquitto.conf
-
-    if [ -n "${USER}" ]; then
-      (
-          echo "username ${USER}"
-          echo "password ${PASSWORD}"
-      ) >> /etc/mosquitto.conf
-    fi
-
-    # TEMP: OpenZwave daemon only supports unauthenticated MQTT so we relay messages with an mqtt bridge.
-    # This will be fixed soon in the ozwdaemon.
-    (
-        echo "topic OpenZWave/${OZW_INSTANCE}/# out"
-        echo "topic # IN OpenZWave/${OZW_INSTANCE}/"
-    ) >> /etc/mosquitto.conf
 else
     echo "[ERROR] No Hass.io mqtt service found!"
     exit 1
@@ -68,4 +50,8 @@ fi
 
 export OZW_INSTANCE=$OZW_INSTANCE
 export ZWAVE_DEVICE=$ZWAVE_DEVICE
+export MQTT_HOST=$HOST
+export MQTT_PORT=$PORT
+export MQTT_USER=$USER
+export MQTT_PASSWORD=$PASSWORD
 exec supervisord -c /etc/supervisor/conf.d/supervisord.conf

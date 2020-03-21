@@ -5,13 +5,12 @@ FROM openzwave/ozwdaemon:latest
 #    x11vnc and alike for ozw-admin
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        mosquitto curl jq \
+        curl jq \
         bash \
         supervisor
 
 # Copy data
 COPY run.sh /
-COPY mosquitto.conf /etc/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /data/
