@@ -1,6 +1,6 @@
 FROM python:slim
 
-ARG MASS_VERSION=0.0.21
+ARG MASS_VERSION=0.0.22
 ARG JEMALLOC_VERSION=5.2.1
 ARG S6_OVERLAY_VERSION=1.22.1.0
 ARG S6_OVERLAY_ARCH=amd64
@@ -8,7 +8,7 @@ ARG BASHIO_VERSION=0.9.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		# required packages
-		flac sox libsox-fmt-mp3 zip curl unzip ffmpeg libsndfile1 libtag1v5 \
+		bash jq flac sox libsox-fmt-mp3 zip curl unzip ffmpeg libsndfile1 libtag1v5 \
 		# build packages
 		libtag1-dev build-essential git && \
     # make sure aiohttp is installed with recommended packages
