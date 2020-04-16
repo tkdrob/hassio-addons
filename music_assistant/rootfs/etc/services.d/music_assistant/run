@@ -7,7 +7,7 @@
 # Enable Jemalloc
 export LD_PRELOAD="/usr/local/lib/libjemalloc.so.2"
 
-args="--config /config"
+args="--config /data"
 
 if bashio::config.true 'debug_messages'; then
     args="${args} --debug"
