@@ -1,6 +1,6 @@
 {
   "name": "Music Assistant",
-  "version": "0.0.16",
+  "version": "0.0.21",
   "description": "Media library manager for (streaming) media",
   "url": "https://github.com/marcelveldt/musicassistant",
   "slug": "music_assistant",
@@ -12,19 +12,16 @@
   "tmpfs": "size=64m",
   "host_network": true,
   "environment": {},
-  "image": "marcelveldt/musicassistant",
   "homeassistant_api": true,
   "ingress": true,
   "ingress_port": 8095,
   "panel_icon": "mdi:library-music",
   "options": {
     "debug_messages": false,
-    "data_dir": "/config/mass_data",
     "use_nightly": false
   },
   "schema": {
     "debug_messages": "bool",
-    "data_dir": "str",
     "use_nightly": "bool"
   }
 }
