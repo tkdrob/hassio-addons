@@ -7,10 +7,10 @@
 # Enable Jemalloc
 export LD_PRELOAD="/usr/local/lib/libjemalloc.so.2"
 
-args=""
+args="--config /config"
 
 if bashio::config.true 'debug_messages'; then
-    args="--debug"
+    args="${args} --debug"
 fi
 
-exec python -m music_assistant --config /config "${args}"
+exec python -m music_assistant ${args}
