@@ -1,14 +1,18 @@
 FROM python:slim
 
-ARG MASS_VERSION=0.0.23
+# Build arguments
+ARG BUILD_ARCH=amd64
+ARG BUILD_VERSION=0.0.24
+ARG BUILD_DATE
+ARG BUILD_REF
+ARG MASS_VERSION="${BUILD_VERSION}"
 ARG JEMALLOC_VERSION=5.2.1
 ARG S6_OVERLAY_VERSION=1.22.1.0
-ARG S6_OVERLAY_ARCH=amd64
 ARG BASHIO_VERSION=0.9.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		# required packages
-		bash jq flac sox libsox-fmt-mp3 zip curl unzip ffmpeg libsndfile1 libtag1v5 \
+		wget bash jq flac sox libsox-fmt-mp3 zip curl unzip ffmpeg libsndfile1 libtag1v5 \
 		# build packages
 		libtag1-dev build-essential git && \
     # make sure aiohttp is installed with recommended packages
@@ -26,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make install && \
     rm -rf /usr/src/jemalloc-${JEMALLOC_VERSION} && \
     # Setup s6 overlay
-    curl -L -s "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.gz" | tar zxvf - -C / && \
+    curl -L -s "https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${BUILD_ARCH}.tar.gz" | tar zxvf - -C / && \
     mkdir -p /etc/fix-attrs.d && \
     mkdir -p /etc/services.d && \
     # Setup bashio
@@ -43,3 +47,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY rootfs /
 
 ENTRYPOINT ["/init"]
+
+# Labels
+LABEL \
+    io.hass.name="music_assistant" \
+    io.hass.description="Multi-room, multi-platform streaming media organizer and streamer" \
+    io.hass.arch="${BUILD_ARCH}" \
+    io.hass.type="addon" \
+    io.hass.version=${BUILD_VERSION} \
+    maintainer="Marcel van der Veldt <m.vanderveldt@outlook.com>" \
+    org.label-schema.description="Multi-room, multi-platform streaming media organizer and streamer" \
+    org.label-schema.build-date=${BUILD_DATE} \
+    org.label-schema.name="MusicAssistant" \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.url="https://github.com/marcelveldt/musicassistant" \
+    org.label-schema.usage="https://github.com/marcelveldt/musicassistant/tree/master/README.md" \
+    org.label-schema.vcs-ref=${BUILD_REF} \
+    org.label-schema.vcs-url="https://github.com/marcelveldt/musicassistant" \
+    org.label-schema.vendor="Marcelveldt's Add-ons for Home Assistant"
