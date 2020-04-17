@@ -1,7 +1,7 @@
 {
   "name": "Radarr",
-  "version": "latest",
-  "slug": "radarr_docker",
+  "version": "preview",
+  "slug": "radarr",
   "description": "Radarr add-on based on the prebuilt docker image from linuxserver",
   "url": "https://github.com/marcelveldt/hassio-addons-repo/radarr",
   "startup": "services",
@@ -16,7 +16,8 @@
   "map": [
     "backup:rw",
     "share:rw",
-    "ssl"
+    "ssl",
+    "movies"
   ],
   "webui": "http://[HOST]:[PORT:7878]",
   "boot": "auto",
