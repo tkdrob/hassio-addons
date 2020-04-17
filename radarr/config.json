@@ -16,8 +16,7 @@
   "map": [
     "backup:rw",
     "share:rw",
-    "ssl",
-    "movies"
+    "ssl"
   ],
   "webui": "http://[HOST]:[PORT:7878]",
   "boot": "auto",
