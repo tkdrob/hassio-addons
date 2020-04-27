@@ -1,4 +1,4 @@
-# Marcelveldt's Hassio Add-ons: Sonarr
+# Hassio Add-ons: Sonarr
 
 ## About
 
@@ -28,4 +28,4 @@ You can use the share folder to access/store your media files.
 
 
 
-[repository]: https://github.com/marcelveldt/hassio-addons-repo
+[repository]: https://github.com/tkdrob/hassio-addons/tree/master/sonarr
