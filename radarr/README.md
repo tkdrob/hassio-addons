@@ -1,4 +1,4 @@
-# Marcelveldt's Hassio Add-ons: Radarr
+# Hassio Add-ons: Radarr
 
 ## About
 
@@ -29,4 +29,4 @@ Documentation for Radarr: https://github.com/Radarr/Radarr
 
 
 
-[repository]: https://github.com/marcelveldt/hassio-addons-repo
+[repository]: https://github.com/tkdrob/hassio-addons
