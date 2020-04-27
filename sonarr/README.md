@@ -28,4 +28,4 @@ You can use the share folder to access/store your media files.
 
 
 
-[repository]: https://github.com/tkdrob/hassio-addons/tree/master/sonarr
+[repository]: https://github.com/tkdrob/hassio-addons
