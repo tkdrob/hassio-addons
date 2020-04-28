@@ -51,7 +51,11 @@ Roon Core Server (www.roonlabs.com) - The core manages your music collection fro
 
 ### &#10003; [Spotweb][addon-spotweb]
 
-Spotweb add-on based on the docker image erikdevries/spotweb
+Spotweb add-on based on the docker image erikdevries/spotweb.
+
+### &#10003; [Spotweb][addon-jackett]
+
+Jackett add-on based on the prebuilt docker image from linuxserver.
 
 ## Contributing
 
