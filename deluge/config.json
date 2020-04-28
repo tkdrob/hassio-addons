@@ -1,9 +1,9 @@
 {
-  "name": "Jackett",
-  "version": "development",
-  "slug": "jackett",
-  "description": "Jackett add-on based on the prebuilt docker image from linuxserver",
-  "url": "https://github.com/tkdrob/hassio-addons/tree/master/jackett",
+  "name": "Deluge",
+  "version": "latest",
+  "slug": "deluge",
+  "description": "Deluge add-on based on the prebuilt docker image from linuxserver",
+  "url": "https://github.com/tkdrob/hassio-addons/tree/master/deluge",
   "startup": "application",
   "arch": [
     "aarch64",
@@ -11,19 +11,19 @@
     "armhf"
   ],
   "ports": {
-    "9117/tcp": 9117
+    "8112/tcp": 8112
   },
   "ports_description": {
-    "9117/tcp": "Web interface"
+    "8112/tcp": "Web interface"
   },
   "map": [
     "backup:rw",
     "share:rw",
     "ssl"
   ],
-  "webui": "http://[HOST]:[PORT:9117]",
+  "webui": "http://[HOST]:[PORT:8112]",
   "ingress": true,
-  "ingress_port": 9117,
+  "ingress_port": 8112,
   "panel_icon": "mdi:download",
   "apparmor": true,
   "init": false,
