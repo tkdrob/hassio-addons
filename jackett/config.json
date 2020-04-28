@@ -11,7 +11,7 @@
     "armhf"
   ],
   "ports": {
-    "80/tcp": 9117
+    "9117/tcp": 9117
   },
   "ports_description": {
     "80/tcp": "Web interface"
