@@ -1,10 +1,10 @@
-# Hassio Add-ons: Sonarr
+# Tkdrob's Hassio Add-ons: Openvpn Connect
 
 ## About
 
-Sonarr add-on based on the prebuilt docker image from linuxserver
+Openvpn Connect add-on based on the prebuilt docker image from dperson
 
-Sonarr (formerly NZBdrone) is a PVR for usenet and bittorrent users. It can monitor multiple RSS feeds for new episodes of your favorite shows and will grab, sort and rename them. It can also be configured to automatically upgrade the quality of files already downloaded when a better quality format becomes available.
+This is an OpenVPN client docker container. It makes routing containers' traffic through OpenVPN easy.
 
 ## Installation
 
@@ -21,7 +21,7 @@ comparison to installing any other Hass.io add-on.
 
 ## Configuration
 
-Access the webui at <your-ip>:8989, for more information check out https://sonarr.tv/
+There is no ui for this container. The port configurations are for the services that you want to use behind the vpn. The preconfigured ports can be changed by editing the config.json file for this addon. For more information, check out https://github.com/dperson/openvpn-client/
 
 By default hassio folders backup, share and ssl are available within the addon.
 You can use the share folder to access/store your media files.

@@ -1,0 +1,39 @@
+{
+  "name": "Openvpn Connect",
+  "version": "latest",
+  "slug": "openvpn-connect",
+  "description": "Openvpn Connect add-on based on the prebuilt docker image from dperson/openvpn-client",
+  "url": "https://github.com/tkdrob/hassio-addons/tree/master/openvpn-connect",
+  "startup": "service",
+  "arch": [
+    "aarch64",
+    "amd64",
+    "armhf"
+  ],
+  "ports": {
+    "8112/tcp": 8112,
+    "58846/tcp": 58846,
+    "58946/tcp": 58946,
+    "58946/udp": 58946,
+    "7878/tcp": 7878,
+    "8989/tcp": 8989,
+    "9117/tcp": 9117,
+    "6767/tcp": 6767
+  },
+  "map": [
+    "backup:rw",
+    "share:rw",
+    "ssl"
+  ],
+  "ingress": false,
+  "apparmor": true,
+  "init": false,
+  "host_network": false,
+  "boot": "auto",
+  "environment": {
+    "PUID": "0",
+    "PGID": "0"
+  },
+  "options": {},
+  "schema": {}
+}
