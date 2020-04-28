@@ -27,6 +27,7 @@
   "panel_icon": "mdi:download",
   "apparmor": true,
   "init": false,
+  "map": ["ssl"],
   "host_network": false,
   "boot": "auto",
   "environment": {
