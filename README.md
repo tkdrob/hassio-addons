@@ -13,7 +13,7 @@ pretty easy. Follow [the official instructions][third-party-addons] on the
 website of Home Assistant, and use the following URL:
 
 ```txt
-https://github.com/marcelveldt/hassio-addons-repo
+https://github.com/tkdrob/hassio-addons
 ```
 
 ## Add-ons provided by this repository
@@ -57,14 +57,15 @@ Spotweb add-on based on the docker image erikdevries/spotweb
 
 This is an active open-source project. Feel free to use the code and/or contribute changes.
 
-[addon-autobackup]: https://github.com/marcelveldt/hassio-addons-repo/tree/master/autobackup
-[addon-google-assistant-webserver]: https://github.com/marcelveldt/hassio-addons-repo/tree/master/google-assistant-webserver
-[addon-nzbget]: https://github.com/marcelveldt/hassio-addons-repo/tree/master/nzbget
-[addon-playlistsyncer]: https://github.com/marcelveldt/hassio-addons-repo/tree/master/playlistsyncer
-[addon-radarr]: https://github.com/marcelveldt/hassio-addons-repo/tree/master/radarr
-[addon-sonarr]: https://github.com/marcelveldt/hassio-addons-repo/tree/master/sonarr
-[addon-roon]: https://github.com/marcelveldt/hassio-addons-repo/tree/master/roon
-[addon-spotweb]: https://github.com/marcelveldt/hassio-addons-repo/tree/master/spotweb
+[addon-autobackup]: https://github.com/tkdrob/hassio-addons/tree/master/autobackup
+[addon-google-assistant-webserver]: https://github.com/tkdrob/hassio-addons/tree/master/google-assistant-webserver
+[addon-nzbget]: https://github.com/tkdrob/hassio-addons/tree/master/nzbget
+[addon-playlistsyncer]: https://github.com/tkdrob/hassio-addons/tree/master/playlistsyncer
+[addon-radarr]: https://github.com/tkdrob/hassio-addons/tree/master/radarr
+[addon-sonarr]: https://github.com/tkdrob/hassio-addons/tree/master/sonarr
+[addon-roon]: https://github.com/tkdrob/hassio-addons/tree/master/roon
+[addon-spotweb]: https://github.com/tkdrob/hassio-addons/tree/master/spotweb
+[addon-jackett]: https://github.com/tkdrob/hassio-addons/tree/master/jackett
 
 
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg
