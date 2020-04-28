@@ -1,4 +1,4 @@
-# Tkdrob's Hassio Add-ons: Sonarr
+# Tkdrob's Hassio Add-ons: Jackett
 
 ## About
 
