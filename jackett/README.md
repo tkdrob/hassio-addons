@@ -1,10 +1,10 @@
-# Marcelveldt's Hassio Add-ons: Sonarr
+# Tkdrob's Hassio Add-ons: Sonarr
 
 ## About
 
-Sonarr add-on based on the prebuilt docker image from linuxserver
+Jackett add-on based on the prebuilt docker image from linuxserver
 
-Sonarr (formerly NZBdrone) is a PVR for usenet and bittorrent users. It can monitor multiple RSS feeds for new episodes of your favorite shows and will grab, sort and rename them. It can also be configured to automatically upgrade the quality of files already downloaded when a better quality format becomes available.
+Jackett provides API Support for your favorite torrent trackers. Jackett works as a proxy server: it translates queries from apps (Sonarr, Radarr, SickRage, CouchPotato, Mylar, Lidarr, DuckieTV, qBittorrent, Nefarious etc.) into tracker-site-specific http queries, parses the html response, then sends results back to the requesting software. This allows for getting recent uploads (like RSS) and performing searches. Jackett is a single repository of maintained indexer scraping & translation logic - removing the burden from other apps.
 
 ## Installation
 
@@ -21,11 +21,11 @@ comparison to installing any other Hass.io add-on.
 
 ## Configuration
 
-Access the webui at <your-ip>:8989, for more information check out https://sonarr.tv/
+Access the webui at <your-ip>:9117, for more information check out https://github.com/Jackett/Jackett/
 
 By default hassio folders backup, share and ssl are available within the addon.
 You can use the share folder to access/store your media files.
 
 
 
-[repository]: https://github.com/marcelveldt/hassio-addons-repo
+[repository]: https://github.com/tkdrob/hassio-addons
