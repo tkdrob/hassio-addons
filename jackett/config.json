@@ -23,7 +23,7 @@
   ],
   "webui": "http://[HOST]:[PORT:9117]",
   "ingress": true,
-  "ingress_port": 0,
+  "ingress_port": 9117,
   "panel_icon": "mdi:download",
   "apparmor": true,
   "init": false,
