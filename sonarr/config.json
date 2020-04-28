@@ -1,7 +1,7 @@
 {
   "name": "Sonarr",
   "version": "preview",
-  "slug": "sonarr_docker",
+  "slug": "docker",
   "description": "Sonarr add-on based on the prebuilt docker image from linuxserver",
   "url": "https://github.com/tkdrob/hassio-addons/tree/master/sonarr",
   "startup": "services",
@@ -13,17 +13,30 @@
   "ports": {
     "8989/tcp": 8989
   },
+  "ports_description": {
+    "8989/tcp": "Web interface"
+  },
   "map": [
     "backup:rw",
     "share:rw",
     "ssl"
   ],
   "webui": "http://[HOST]:[PORT:8989]",
+  "ingress": true,
+  "ingress_port": 8989,
+  "panel_icon": "mdi:television",
+  "apparmor": true,
+  "init": false,
+  "host_network": false,
   "boot": "auto",
   "environment": {
     "PUID": "0",
     "PGID": "0"
   },
   "options": {},
-  "schema": {}
+  "schema": {},
+  "environment": {
+	
+  
+  }
 }
