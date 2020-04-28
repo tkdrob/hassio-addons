@@ -13,6 +13,9 @@
   "ports": {
     "9117/tcp": 9117
   },
+  "ports_description": {
+    "80/tcp": "Web interface"
+  },
   "map": [
     "backup:rw",
     "share:rw",
